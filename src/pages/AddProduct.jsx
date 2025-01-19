@@ -3,6 +3,7 @@ import TextArea from "antd/es/input/TextArea";
 import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
+import CategorySelection from "../components/productCompos/CategorySelection";
 
 const AddProduct = () => {
   return (
@@ -33,8 +34,9 @@ const AddProduct = () => {
 
       {/* add product right side */}
 
-      <div className=" w-full grid grid-cols-1 gap-y-6">
+      <div className=" w-full flex flex-col gap-y-6">
         <MediaUpload/>
+        <CategorySelection/>
       </div>
 
 

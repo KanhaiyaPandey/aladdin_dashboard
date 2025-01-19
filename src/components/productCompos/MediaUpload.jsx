@@ -1,51 +1,165 @@
 /* eslint-disable no-unused-vars */
 
-const MediaUpload = () => {
+import { useEffect, useRef, useState } from "react";
+import { customFetch } from "../../utils/Helpers";
 
-    const medias = [
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736005832/sjh7bnwrrsvnwrhnaz5r.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736005834/bvfapswayddchuhzkfav.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736005835/qtqcfbmk7wqjqn3c6axv.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736005837/ovzcmnwptfz8zr8ugilk.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736005839/gdv7lej5ybnja87pl8bs.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736309955/zobmt29ao6u1ri2td1jk.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736310821/ilsym55qq9lexmqfcj82.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736311886/kcsj5gp2bhpt7i3p4ypm.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736311985/epqsuha9fqrfvb8dsdwa.jpg",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736692990/gsskvb6zcavqtmmtshnn.webp",
-        "http://res.cloudinary.com/dwfe5swye/image/upload/v1736681473/asd14x7uwzs2cypdntqh.jpg"
-    ]
+const MediaUpload = () => {
+  const fileInputRef = useRef(null);
+  const [medias, setMedias] = useState([]);
+  const [inputFile, setInputFile] = useState([])
+  const [dragging, setDragging] = useState(false);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    if (files) {
+      processFiles(files);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files) {
+      processFiles(files);
+    }
+  };
+
+  const processFiles = (files) => {
+    // Add files to the state with a temporary preview and `uploading: true`
+    const filesArray = Array.from(files).map((file) => ({
+      file,
+      uploading: true,
+      url: URL.createObjectURL(file), // Temporary preview
+    }));
+
+    setMedias((prev) => [...prev, ...filesArray]);
+
+    uploadFiles(filesArray);
+  };
+
+  const uploadFiles = async (filesArray) => {
+    const updatedMedias = [...medias]; // Start with the current state
+  
+    for (const fileObject of filesArray) {
+      const formData = new FormData();
+      formData.append("media", fileObject.file);
+  
+      try {
+        const response = await customFetch.post("/media/upload-media", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("response:", response.data);
+        
+  
+        // Add uploaded media to the updated array
+        updatedMedias.push(response.data[0]);
+      } catch (error) {
+        console.error("Error uploading files:", error);
+  
+        // Optionally add a failed state to the media
+        updatedMedias.push({
+          uploading: false,
+        });
+      }
+    }
+  
+    // Update the medias state after all uploads
+    setMedias(updatedMedias);
+  };
+  
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDragging(false);
+  };
+
+  useEffect(() =>{
+    console.log("medias:", medias);
+    
+  }, [medias])
 
   return (
-    <div className="w-full max-h-[60vh] flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
-      <h1 className=" text-xl ">Product Medias</h1>
+    <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
+      <h1 className="text-xl">Product Medias</h1>
 
-      <div className=" w-full flex gap-3  justify-center">
-      
-        <div className=" w-3/12 rounded-lg bg-white border">
-         <img src={medias[0]} className=" rounded-lg w-full h-full aspect-square object-contain shadow-md" alt="" />
-        </div>
+      <div
+        className={`w-full flex gap-3 justify-center cursor-pointer rounded-2xl p-2 min-h-[29vh] ${
+          dragging ? "bg-gray-300" : ""
+        } transition-all duration-300 ease-in-out`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {medias.length === 0 && (
+          <div className="w-full items-center justify-center flex">
+            <button
+              className="px-4 py-2 rounded-full bg-black text-white text-center font-light"
+              onClick={handleButtonClick}
+            >
+              Upload image
+              <input
+                ref={fileInputRef}
+                id="file-upload"
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </button>
+          </div>
+        )}
 
-        <div className="w-9/12 grid grid-cols-5 gap-2">
-            {medias.slice(1).map((media, index) => (
-                <div 
-                key={index} 
-                className="rounded-lg bg-white border flex items-center justify-center aspect-square">
-                <img 
-                    src={media} 
-                    className="rounded-lg w-full h-full object-contain shadow-md" 
-                    alt="" 
+        {medias.length > 0 && (
+          <>
+            <div className="w-3/12 rounded-lg bg-white border max-h-[190px] aspect-square">
+              {medias[0].uploading ? (
+                <div className="skeleton rounded-lg w-full h-full aspect-square"></div>
+              ) : (
+                <img
+                  src={medias[0].url}
+                  className="rounded-lg w-full h-full aspect-square object-contain shadow-md"
+                  alt=""
                 />
+              )}
+            </div>
+            <div className="w-9/12 grid grid-cols-5 gap-x-2">
+              {medias.slice(1).map((media, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg bg-white border flex items-center justify-center aspect-square"
+                >
+                  {media.uploading ? (
+                    <div className="skeleton rounded-lg w-full h-full"></div>
+                  ) : (
+                    <img
+                      src={media.url}
+                      className="rounded-lg w-full h-full object-contain shadow-md"
+                      alt=""
+                    />
+                  )}
                 </div>
-            ))}
-        </div>
-
-
-        
+              ))}
+            </div>
+          </>
+        )}
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default MediaUpload
+export default MediaUpload;
