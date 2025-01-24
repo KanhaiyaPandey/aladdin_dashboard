@@ -4,9 +4,67 @@ import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { customFetch } from "../utils/Helpers";
+
+
+
 
 const AddProduct = () => {
+
+  const [productData, setProductData] = useState({
+    title: "",
+    description:"",
+    costPrice:"",
+    sellPrice:"",
+    compareAtPrice:"",
+    sku:"",
+    barcode:"",
+    allowBackorder:true,
+    stockStatus:"IN_STOCK",
+    attributes:[],
+    productCategories:[],
+    productMedias:[],
+    variants:[],
+    warehouseData:[],
+
+  })
+
+  useEffect(() =>{
+   console.log("product data",productData);
+   
+  }, [productData])
+
+  const handleSaveProduct = async () => {
+    try {
+
+      const formData = new FormData();
+      formData.append("product", JSON.stringify(productData));
+      const response = await customFetch.post('/create-product', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error saving product:", error.response?.data || error.message);
+      toast.error("Failed to save the product. Please try again.");
+    }
+  };
+  
+
   return (
+    <>
+    <div className=" w-full bg-white px-10 py-4 flex items-center justify-between">
+      <span></span>
+      <div className=" flex gap-3">
+      <button className="btn btn-outline">Discard</button>
+      <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>Save</button>
+      </div>
+ 
+    </div>
     <div className=" bg-white p-7 lato grid grid-cols-2 gap-x-6">
       {/* add product left side */}
       <div className=" w-full grid grid-cols-1 gap-y-6">
@@ -14,7 +72,12 @@ const AddProduct = () => {
           <h1 className=" text-xl">General Information</h1>
           <div className="w-full">
             <p className="text-gray-500">Product Name</p>
-            <Input placeholder="" variant="filled" className=" mt-2 h-12" />
+            <Input placeholder="" 
+              onChange={(e) => setProductData({
+                ...productData,
+                title: e.target.value
+              })} 
+              variant="filled" className=" mt-2 h-12" />
           </div>
           <div className="w-full">
             <p className="text-gray-500">Description</p>
@@ -22,25 +85,30 @@ const AddProduct = () => {
               placeholder=""
               className=" p-2 mt-2"
               variant="filled"
+              onChange={(e) => setProductData({
+                ...productData,
+                description : e.target.value
+              })} 
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           </div>
         </div>
 
-        <Pricing />
+        <Pricing productData={productData} setProductData={setProductData} />
 
-        <Inventory />
+        <Inventory productData={productData} setProductData={setProductData} />
       </div>
 
       {/* add product right side */}
 
       <div className=" w-full flex flex-col gap-y-6">
-        <MediaUpload/>
-        <CategorySelection/>
+        <MediaUpload productData={productData} setProductData={setProductData}/>
+        <CategorySelection productData={productData} setProductData={setProductData}/>
       </div>
 
 
     </div>
+    </>
   );
 };
 

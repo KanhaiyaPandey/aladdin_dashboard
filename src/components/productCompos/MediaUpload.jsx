@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
 import { useEffect, useRef, useState } from "react";
 import { customFetch } from "../../utils/Helpers";
 
-const MediaUpload = () => {
+const MediaUpload = ({productData, setProductData}) => {
   const fileInputRef = useRef(null);
   const [medias, setMedias] = useState([]);
   const [inputFile, setInputFile] = useState([])
@@ -74,6 +75,10 @@ const MediaUpload = () => {
   
     // Update the medias state after all uploads
     setMedias(updatedMedias);
+    setProductData((prevData) => ({
+      ...prevData,
+      productMedias: updatedMedias,
+    }));
   };
   
 

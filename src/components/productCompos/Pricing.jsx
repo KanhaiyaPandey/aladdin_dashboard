@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { Input } from "antd";
 
-const Pricing = () => {
+const Pricing = ({productData, setProductData}) => {
   return (
     <div className=" w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
       <h1 className=" text-xl ">Pricing</h1>
@@ -8,24 +9,46 @@ const Pricing = () => {
       <div className=" w-full flex gap-3 items-center justify-center ">
         <div className=" w-1/2 flex flex-col gap-2">
           <p className="text-gray-500">Sell Price</p>
-          <Input prefix="₹" className=" h-12" variant="filled" />
+          <Input
+           value={productData.sellPrice}
+           onChange={(e) => {
+            const value = e.target.value;
+            setProductData({
+              ...productData,
+              sellPrice: value === "" ? "" : Math.max(0, parseFloat(value) || 0),
+            });
+          }}
+           prefix="₹" className=" h-12" variant="filled" />
         </div>
 
         <div className=" w-1/2 flex flex-col gap-2">
           <p className="text-gray-500">Compare At</p>
-          <Input prefix="₹" className=" h-12" variant="filled" />
+          <Input
+           value={productData.compareAtPrice}
+          onChange={(e) => setProductData({
+            
+            ...productData,
+            compareAtPrice: Math.max(0,e.target.value)
+          })}
+           prefix="₹" className=" h-12" variant="filled" />
         </div>
       </div>
 
       <div className=" w-full flex gap-3 items-center justify-center ">
         <div className=" w-1/2 flex flex-col gap-2">
           <p className="text-gray-500">Cost Price</p>
-          <Input prefix="₹" className=" h-12" variant="filled" />
+          <Input
+          value={productData.costPrice}
+          onChange={(e) => setProductData({
+            ...productData,
+            costPrice: Math.max(0,e.target.value)
+          })}
+           prefix="₹" className=" h-12" variant="filled" />
         </div>
 
         <div className=" w-1/2 flex flex-col gap-2">
           <p className="text-gray-500">Profit</p>
-          <Input prefix="₹" className=" h-12" variant="filled" disabled />
+          <Input value={productData.sellPrice - productData.costPrice} prefix="₹" className=" h-12" variant="filled" disabled />
         </div>
       </div>
 

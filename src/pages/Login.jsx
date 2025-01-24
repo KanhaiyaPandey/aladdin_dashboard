@@ -5,15 +5,22 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Form, useNavigation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [passwordVisible, setPasswordVisible] = useState(false);
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === 'submitting';
+    const navigate = useNavigate();
+
+    
 
   
     const handleLogin = async (e) => {
+        console.log(isSubmitting);
+        
         e.preventDefault();
       
         try {
@@ -32,18 +39,22 @@ const Login = () => {
           );
           toast.success("login successfully")
           setError("");
+          navigate("/add-product");
         } catch (err) {
           console.error("Login error:", err.response || err);
           setError(
             err.response?.data?.message || "Invalid email or password. Please try again."
           );
         }
+        console.log(isSubmitting);
+        
       };
       
   
     return (
       <div className="min-h-screen w-screen flex  items-center justify-center bg-gray-100">
-        <form
+        <Form
+           method='post'
           className="bg-white p-6  w-1/3 rounded-xl shadow-md "
           onSubmit={handleLogin}
         >
@@ -54,6 +65,7 @@ const Login = () => {
               Email
             </label>
             <Input
+            variant="filled"
               type="email"
               id="email"
               className="w-full px-3 py-2  h-12"
@@ -68,13 +80,14 @@ const Login = () => {
               Password
             </label>
             <Input.Password
-              type="password"
-              id="password"
-              className="w-full px-3 py-2 h-12"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-              required
+            variant="filled"
+            type="password"
+            id="password"
+            className="w-full px-3 py-2 h-12"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            required
             />
           </div>
   
@@ -82,15 +95,22 @@ const Login = () => {
             <p className="text-red-500 text-sm mb-4">{error}</p>
           )}
 
-           <div className="divider text-sm">OR</div>
+           <div className="divider hidden text-sm">OR</div>
   
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
+            className="w-full btn bg-slate-800 hover:bg-black text-white rounded-xl   py-2 flex items-center justify-center transition"
           >
-            Login
+              {isSubmitting ? (
+        <>
+         <span className="loading loading-dots loading-sm"></span>
+         
+        </>
+      ) : (
+        'Login'
+      )}
           </button>
-        </form>
+        </Form>
       </div>
     );
   };
