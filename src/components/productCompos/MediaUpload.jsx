@@ -10,6 +10,8 @@ const MediaUpload = ({productData, setProductData}) => {
   const [inputFile, setInputFile] = useState([])
   const [dragging, setDragging] = useState(false);
 
+
+
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
@@ -33,9 +35,10 @@ const MediaUpload = ({productData, setProductData}) => {
 
   const processFiles = (files) => {
     // Add files to the state with a temporary preview and `uploading: true`
-    const filesArray = Array.from(files).map((file) => ({
+    const filesArray = Array.from(files).map((file, index) => ({
       file,
       uploading: true,
+      sequence: index+1,
       url: URL.createObjectURL(file), // Temporary preview
     }));
 
@@ -59,21 +62,14 @@ const MediaUpload = ({productData, setProductData}) => {
         });
 
         console.log("response:", response.data);
-        
-  
-        // Add uploaded media to the updated array
         updatedMedias.push(response.data[0]);
       } catch (error) {
         console.error("Error uploading files:", error);
-  
-        // Optionally add a failed state to the media
         updatedMedias.push({
           uploading: false,
         });
       }
     }
-  
-    // Update the medias state after all uploads
     setMedias(updatedMedias);
     setProductData((prevData) => ({
       ...prevData,
@@ -93,9 +89,10 @@ const MediaUpload = ({productData, setProductData}) => {
   };
 
   useEffect(() =>{
-    console.log("medias:", medias);
+    // console.log("medias:", medias);
+    setMedias(productData.productMedias)
     
-  }, [medias])
+  }, [productData])
 
   return (
     <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -131,13 +128,13 @@ const MediaUpload = ({productData, setProductData}) => {
 
         {medias.length > 0 && (
           <>
-            <div className="w-3/12 rounded-lg bg-white border max-h-[190px] aspect-square">
+            <div className="w-3/12 rounded-lg bg-white border max-h-[190px] aspect-square shadow-md">
               {medias[0].uploading ? (
                 <div className="skeleton rounded-lg w-full h-full aspect-square"></div>
               ) : (
                 <img
                   src={medias[0].url}
-                  className="rounded-lg w-full h-full aspect-square object-contain shadow-md"
+                  className="rounded-lg w-full h-full object-cover "
                   alt=""
                 />
               )}
@@ -159,6 +156,24 @@ const MediaUpload = ({productData, setProductData}) => {
                   )}
                 </div>
               ))}
+
+              <div className=" aspect-square border items-center justify-center flex rounded-lg shadow-sm">
+                <button
+                className="px-4 py-2 "
+                onClick={handleButtonClick}
+              >
+                +
+                <input
+                  ref={fileInputRef}
+                  id="file-upload"
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </button>
+              </div>
             </div>
           </>
         )}

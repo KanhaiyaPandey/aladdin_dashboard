@@ -1,4 +1,4 @@
-import { Select } from "antd"
+import { message, Select } from "antd"
 import { useState } from "react";
 
 const OPTIONS = ['Apples', 'Nails', 'Bananas', 'Helicopters'];
@@ -6,6 +6,10 @@ const CategorySelection = ({productData, setProductData}) => {
    
     const [selectedItems, setSelectedItems] = useState([]);
     const filteredOptions = OPTIONS.filter((o) => !selectedItems.includes(o));
+
+  //  const handlemsg = () =>{
+  //   message.success('hello')
+  //  }
 
 
   return (
@@ -75,7 +79,6 @@ const CategorySelection = ({productData, setProductData}) => {
               </li>
               
             </ul> */}
-
 
           </div>
 

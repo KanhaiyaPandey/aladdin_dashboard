@@ -2,17 +2,21 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import AddProduct from "./pages/AddProduct"
 import Login from "./pages/Login"
+import UpdateProduct from './pages/UpdateProduct'
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login/>,
-    // action: LoginAction(store),
+    element: <Login/>
   },
 
   {
     path: "/add-product",
     element: <AddProduct/>
+  },
+  {
+    path: "/update-product",
+    element: <UpdateProduct/>
   }
 ])
 

@@ -13,7 +13,9 @@ const Inventory = ({productData, setProductData}) => {
           <Input onChange={(e) => setProductData({
             ...productData,
             sku:e.target.value
-          })} type="text" className=" h-12" variant="filled" />
+          })}
+          value={productData.sku}
+           type="text" className=" h-12" variant="filled" />
         </div>
 
         <div className=" w-full flex flex-col gap-2">
@@ -23,6 +25,7 @@ const Inventory = ({productData, setProductData}) => {
             ...productData,
             barcode:e.target.value
           })}
+          value={productData.barcode}
            type="text" className=" h-12" variant="filled" />
         </div>
       </div>

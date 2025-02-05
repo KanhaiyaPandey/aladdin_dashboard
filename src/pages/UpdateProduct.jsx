@@ -1,67 +1,71 @@
+/* eslint-disable no-unused-vars */
 import { Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast";
 import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { customFetch } from "../utils/Helpers";
+
+
+const UpdateProduct = () => {
+
+    const [productData, setProductData] = useState({
+        title: "",
+        description:"",
+        costPrice:"",
+        sellPrice:"",
+        compareAtPrice:"",
+        sku:"",
+        barcode:"",
+        allowBackorder:true,
+        stockStatus:"IN_STOCK",
+        attributes:[],
+        productCategories:[],
+        productMedias:[],
+        variants:[],
+        warehouseData:[],
+    
+      })
+
+    
 
 
 
+    useEffect(() =>{
 
-const AddProduct = () => {
+        const fetchData = async () => {
+            const productId = "6793abed64e45464c1f824bf"
+            try {
+              const response = await fetch(`http://localhost:8080/api/public/product/67a382c5c6c84b7b81a473b5`)
+              if (!response.ok) {
+                throw new Error("Failed to fetch data");
+              }
+              const result = await response.json();
+              console.log("response123: ", result);
+              setProductData(result);
+            
+            } catch (err) {
+            //   setError(err.message);
+            } finally {
+            //   setLoading(false);
+            }
+          };
+      
+          fetchData();
 
-  const [productData, setProductData] = useState({
-    title: "",
-    description:"",
-    costPrice:"",
-    sellPrice:"",
-    compareAtPrice:"",
-    sku:"",
-    barcode:"",
-    allowBackorder:true,
-    stockStatus:"IN_STOCK",
-    attributes:[],
-    productCategories:[],
-    productMedias:[],
-    variants:[],
-    warehouseData:[],
 
-  })
 
-  useEffect(() =>{
-   console.log("product data",productData);
-   
-  }, [productData])
-
-  const handleSaveProduct = async () => {
-    try {
-
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(productData));
-      const response = await customFetch.post('/create-product', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      toast.success(response.data.message);
-    } catch (error) {
-      console.error("Error saving product:", error.response?.data || error.message);
-      toast.error("Failed to save the product. Please try again.");
-    }
-  };
-  
+    }, [])
 
   return (
     <>
     <div className=" w-full bg-white px-10 py-4 flex items-center justify-between">
       <span></span>
       <div className=" flex gap-3">
-      <button className="btn btn-outline hover:bg-red-500">Discard</button>
-      <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>Save</button>
+      <button className="btn btn-outline">Discard</button>
+      <button className="btn btn-neutral" >Save</button>
       </div>
  
     </div>
@@ -77,6 +81,7 @@ const AddProduct = () => {
                 ...productData,
                 title: e.target.value
               })} 
+              value={productData.title}
               variant="filled" className=" mt-2 h-12" />
           </div>
           <div className="w-full">
@@ -89,6 +94,7 @@ const AddProduct = () => {
                 ...productData,
                 description : e.target.value
               })} 
+              value={productData.description}
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           </div>
@@ -109,7 +115,7 @@ const AddProduct = () => {
 
     </div>
     </>
-  );
-};
+  )
+}
 
-export default AddProduct;
+export default UpdateProduct
