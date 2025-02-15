@@ -7,6 +7,7 @@ import CategorySelection from "../components/productCompos/CategorySelection";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
+import NavigationHead from "../components/productCompos/NavigationHead";
 
 
 
@@ -57,14 +58,7 @@ const AddProduct = () => {
 
   return (
     <>
-    <div className=" w-full bg-white px-10 py-4 flex items-center justify-between">
-      <span></span>
-      <div className=" flex gap-3">
-      <button className="btn btn-outline hover:bg-red-500">Discard</button>
-      <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>Save</button>
-      </div>
- 
-    </div>
+    <NavigationHead handleSaveProduct={handleSaveProduct}/>
     <div className=" bg-white p-7 lato grid grid-cols-2 gap-x-6">
       {/* add product left side */}
       <div className=" w-full grid grid-cols-1 gap-y-6">

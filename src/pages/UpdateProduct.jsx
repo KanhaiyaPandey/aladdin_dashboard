@@ -7,6 +7,7 @@ import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
+import NavigationHead from "../components/productCompos/NavigationHead";
 
 
 const UpdateProduct = () => {
@@ -61,14 +62,7 @@ const UpdateProduct = () => {
 
   return (
     <>
-    <div className=" w-full bg-white px-10 py-4 flex items-center justify-between">
-      <span></span>
-      <div className=" flex gap-3">
-      <button className="btn btn-outline">Discard</button>
-      <button className="btn btn-neutral" >Save</button>
-      </div>
- 
-    </div>
+    <NavigationHead/>
     <div className=" bg-white p-7 lato grid grid-cols-2 gap-x-6">
       {/* add product left side */}
       <div className=" w-full grid grid-cols-1 gap-y-6">
