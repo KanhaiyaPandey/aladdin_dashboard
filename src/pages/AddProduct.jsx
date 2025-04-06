@@ -40,7 +40,7 @@ const AddProduct = () => {
 
   const handleSaveProduct = async () => {
     try {
-
+   console.log(document.cookie);
       const formData = new FormData();
       formData.append("product", JSON.stringify(productData));
       const response = await customFetch.post('/create-product', formData, {
