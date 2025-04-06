@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
+import Variants from "../components/productCompos/Variants";
 
 
 
@@ -50,8 +51,8 @@ const AddProduct = () => {
   
       toast.success(response.data.message);
     } catch (error) {
-      console.error("Error saving product:", error.response?.data || error.message);
-      toast.error("Failed to save the product. Please try again.");
+      toast.error( error.message);
+      // toast.error("Failed to save the product. Please try again.");
     }
   };
   
@@ -98,6 +99,7 @@ const AddProduct = () => {
       <div className=" w-full flex flex-col gap-y-6">
         <MediaUpload productData={productData} setProductData={setProductData}/>
         <CategorySelection productData={productData} setProductData={setProductData}/>
+        <Variants/>
       </div>
 
 
