@@ -8,7 +8,7 @@ const AllProducts = () => {
     
             const fetchData = async () => {
                 try {
-                  const response = await fetch(`http://localhost:8080/api/public/product/all-products`)
+                  const response = await fetch(`https://aladdin-0kuf.onrender.com/api/public/product/all-products`)
                   if (!response.ok) {
                     throw new Error("Failed to fetch data");
                   }
@@ -49,16 +49,15 @@ const AllProducts = () => {
 
             {products.map((product, index) => (
                 <tr key={product.productId}>
-                <th>1</th>
+                <th>{index + 1}</th>
                 <td>
                     <div className=" flex gap-x-3">
                         <div className=" border w-[50px] h-[50px] rounded-md">
-                            <img src={product.productMedias[0].url} className=" w-full h-full object-contain aspect-square"  alt="" />
+                            <img src={product?.productMedias[0]?.url} className=" w-full h-full object-contain aspect-square"  alt="" />
                         </div>
-
                     </div>
                 </td>
-                <td>Quality Control Specialist</td>
+                <td>{product?.title}</td>
                 <td>Blue</td>
                 </tr>
             ))}

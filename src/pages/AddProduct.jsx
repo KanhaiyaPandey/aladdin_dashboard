@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
+import { redirect } from "react-router-dom";
 
 
 
@@ -50,6 +51,7 @@ const AddProduct = () => {
       });
   
       toast.success(response.data.message);
+      
     } catch (error) {
       toast.error( error.message);
       // toast.error("Failed to save the product. Please try again.");
