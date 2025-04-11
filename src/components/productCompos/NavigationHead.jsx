@@ -1,7 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
-
-
 const NavigationHead = ({handleSaveProduct}) => {
   return (
     <div className=" w-full bg-white px-10 py-4 flex items-center justify-between">

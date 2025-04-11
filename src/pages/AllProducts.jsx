@@ -1,73 +1,68 @@
 import { useEffect, useState } from "react";
 
-
 const AllProducts = () => {
-    const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
 
-        useEffect(() =>{
-    
-            const fetchData = async () => {
-                try {
-                  const response = await fetch(`https://aladdin-0kuf.onrender.com/api/public/product/all-products`)
-                  if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                  }
-                  const result = await response.json();
-                  console.log("response123: ", result);
-                  setProducts(result);
-                
-                } catch (err) {
-                //   setError(err.message);
-                } finally {
-                //   setLoading(false);
-                }
-              };
-          
-              fetchData();
-    
-    
-    
-        }, [])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/public/product/all-products`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const result = await response.json();
+        console.log("response123: ", result);
+        setProducts(result);
+      } catch (err) {
+        //   setError(err.message);
+      } finally {
+        //   setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <div className=" w-full p-7  bg-white">
-
-
-
-        <div className="overflow-x-auto w-full">
-        <table className="table  w-full">
-            {/* head */}
-            <thead>
-            <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Categories</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {products.map((product, index) => (
-                <tr key={product.productId}>
-                <th>{index + 1}</th>
-                <td>
-                    <div className=" flex gap-x-3">
-                        <div className=" border w-[50px] h-[50px] rounded-md">
-                            <img src={product?.productMedias[0]?.url} className=" w-full h-full object-contain aspect-square"  alt="" />
-                        </div>
-                    </div>
-                </td>
-                <td>{product?.title}</td>
-                <td>Blue</td>
-                </tr>
-            ))}
-
-            </tbody>
-        </table>
+    <div className="w-full h-screen overflow-x-hidden   p-7 bg-white">
+    
+    <div className="mb-6">
+      <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">All Products</h2>
+    </div>
+  
+   
+    
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 lg:px-16 gap-8">
+      {[...products].reverse().map((product, index) => (
+        <div
+          key={product.productId}
+          className="bg-white border border-gray-400 rounded-lg shadow-md p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
+        >
+          <div className="w-full h-40 flex items-center justify-center border rounded-md overflow-hidden">
+            <img
+              src={product?.productMedias[0]?.url}
+              alt={product?.title}
+              className="object-contain h-full"
+            />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">
+              {product?.title}
+            </h3>
+            <p className="text-gray-600">{product?.description}</p>
+            
+          </div>
         </div>
+      ))}
+    </div>
 
     </div>
-  )
-}
+ 
+  
 
-export default AllProducts
+  );
+};
+
+export default AllProducts;

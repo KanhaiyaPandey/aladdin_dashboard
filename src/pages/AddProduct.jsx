@@ -10,11 +10,12 @@ import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
 import { redirect } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 
 
 const AddProduct = () => {
+  const navigate = useNavigate();
 
   const [productData, setProductData] = useState({
     title: "",
@@ -54,8 +55,10 @@ const AddProduct = () => {
       
     } catch (error) {
       toast.error( error.message);
-      // toast.error("Failed to save the product. Please try again.");
+      toast.error("Failed to save the product. Please try again.");
     }
+
+    navigate("/all-product");
   };
   
 

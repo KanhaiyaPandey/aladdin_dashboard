@@ -25,7 +25,7 @@ const Login = () => {
       
         try {
           const response = await axios.post(
-            "https://aladdin-0kuf.onrender.com/user/login",
+            "http://localhost:8080/user/login",
             {
               email: email,
               password: password,
