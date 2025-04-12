@@ -4,6 +4,8 @@ import AddProduct from "./pages/AddProduct"
 import Login from "./pages/Login"
 import UpdateProduct from './pages/UpdateProduct'
 import AllProducts from './pages/AllProducts'
+import Dashboard from './pages/Dashboard'
+
 
 const router = createBrowserRouter([
   {
@@ -22,7 +24,12 @@ const router = createBrowserRouter([
   {
     path: "/all-product",
     element: <AllProducts/>
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard/>
   }
+  
 ])
 
 
