@@ -1,20 +1,18 @@
 import React from "react";
 import Sidebar from "../components/dashboardCompos/Sidebar";
+import Cards from "../components/dashboardCompos/Cards";
+import Graphs from "../components/dashboardCompos/Graphs";
 
 const Dashboard = () => {
   return (
-    <>
-    <main className="flex">
-    <Sidebar/>
-    <h1 className="font-bold ">Dashboard</h1>
-
-    <card></card>
-    
-
+    <main>
+      <div className="flex">
+        <Sidebar />
+        <Cards />
+        {/* <Graphs /> */}
+      </div>
     </main>
-  </>
-  )
-  
+  );
 };
 
 export default Dashboard;

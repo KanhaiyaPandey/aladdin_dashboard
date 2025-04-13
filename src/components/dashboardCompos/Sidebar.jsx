@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const Sidebar = () => {
   return (
     <>
-      <main className="lg:block md:hidden h-screen flex flex-col  bg-slate-300 w-1/6">
+      <main className="lg:block hidden  h-screen  flex-col  bg-slate-300 w-1/6">
         <h1 className="font-extrabold grid h-16 m-5 items-center justify-center text-3xl">
           aladin
         </h1>
@@ -17,7 +17,7 @@ const Sidebar = () => {
         <ul className="flex  flex-col justify-evenly">
           
           <Link to="/all-product">
-            <li className="flex pl-7 items-center space-x-3  h-16 text-xl border-b-2 border-slate-400/30    hover:bg-gray-400 cursor-pointer">
+            <li className="flex pl-7 items-center space-x-3  h-16 text-xl border-y-2 border-slate-400/30    hover:bg-gray-400 cursor-pointer">
               <IoMdCube className=" w-6 h-6" /> <h3> Products</h3>
             </li>
           </Link>
@@ -42,7 +42,4 @@ const Sidebar = () => {
 
 export default Sidebar;
 
-// Products
-// Categories
-// Costumers
-// Settings
+
