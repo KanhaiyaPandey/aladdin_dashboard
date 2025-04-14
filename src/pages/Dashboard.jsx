@@ -6,7 +6,7 @@ import Graphs from "../components/dashboardCompos/Graphs";
 const Dashboard = () => {
   return (
     <main>
-      <div className="flex">
+      <div className="flex bg-slate-200">
         <Sidebar />
         <Cards />
         {/* <Graphs /> */}

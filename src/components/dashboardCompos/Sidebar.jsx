@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const Sidebar = () => {
   return (
     <>
-      <main className="lg:block hidden  h-screen  flex-col  bg-slate-300 w-1/6">
+      <main className="lg:block hidden  h-screen  flex-col  bg-slate-300/60 w-1/6">
         <h1 className="font-extrabold grid h-16 m-5 items-center justify-center text-3xl">
           aladin
         </h1>
