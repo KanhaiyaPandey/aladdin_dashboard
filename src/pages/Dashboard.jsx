@@ -1,7 +1,6 @@
 import React from "react";
 import Sidebar from "../components/dashboardCompos/Sidebar";
 import Cards from "../components/dashboardCompos/Cards";
-import Graphs from "../components/dashboardCompos/Graphs";
 
 const Dashboard = () => {
   return (
@@ -9,7 +8,7 @@ const Dashboard = () => {
       <div className="flex bg-slate-200">
         <Sidebar />
         <Cards />
-        {/* <Graphs /> */}
+       
       </div>
     </main>
   );

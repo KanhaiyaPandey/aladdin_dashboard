@@ -1,7 +1,3 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-
 import { useEffect, useRef, useState } from "react";
 import { customFetch } from "../../utils/Helpers";
 

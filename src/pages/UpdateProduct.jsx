@@ -30,16 +30,12 @@ const UpdateProduct = () => {
     
       })
 
-    
-
-
-
     useEffect(() =>{
 
         const fetchData = async () => {
             const productId = "6793abed64e45464c1f824bf"
             try {
-              const response = await fetch(`http://localhost:8080/api/public/product/67a382c5c6c84b7b81a473b5`)
+              const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/public/product/67a382c5c6c84b7b81a473b5`)
               if (!response.ok) {
                 throw new Error("Failed to fetch data");
               }

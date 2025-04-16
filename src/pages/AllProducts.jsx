@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { RiAddCircleLine } from "react-icons/ri";
+import { Link } from "react-router-dom";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -7,7 +9,7 @@ const AllProducts = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/public/product/all-products`
+          `${import.meta.env.VITE_BASE_URL}/api/public/product/all-products`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
@@ -28,8 +30,11 @@ const AllProducts = () => {
   return (
     <div className="w-full h-screen overflow-x-hidden   p-7 bg-white">
     
-    <div className="mb-6">
+    <div className="mb-6 flex items-center justify-between">
       <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">All Products</h2>
+      <Link to="/add-product">
+        <button className=""><RiAddCircleLine className="w-7 h-7" /></button>
+      </Link>
     </div>
   
    

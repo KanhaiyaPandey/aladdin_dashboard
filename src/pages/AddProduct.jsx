@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
-import { redirect } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 
@@ -65,8 +64,8 @@ const AddProduct = () => {
   return (
     <>
     <NavigationHead handleSaveProduct={handleSaveProduct}/>
-    <div className=" bg-white p-7 lato grid grid-cols-2 gap-x-6">
-      {/* add product left side */}
+    <div className=" bg-white p-7 lato grid grid-cols-2 gap-x-6 ">
+      
       <div className=" w-full grid grid-cols-1 gap-y-6">
         <div className=" w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
           <h1 className=" text-xl">General Information</h1>

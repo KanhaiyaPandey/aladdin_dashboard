@@ -66,7 +66,7 @@ const Pricing = ({productData, setProductData}) => {
 
       <p className=" flex gap-3 items-center">
         <input type="radio" name="radio-1" className="radio w-4 h-4" />
-        <span className=" text-sm text-gray-500">Show discount in amout</span>
+        <span className=" text-sm text-gray-500">Show discount in amount</span>
       </p>
     </div>
   );
