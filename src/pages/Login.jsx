@@ -39,7 +39,7 @@ const Login = () => {
           );
           toast.success("login successfully")
           setError("");
-          navigate("/add-product");
+          navigate("/");
         } catch (err) {
           console.error("Login error:", err.response || err);
           setError(

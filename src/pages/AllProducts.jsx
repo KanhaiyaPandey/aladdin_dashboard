@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { FaEdit } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -27,46 +31,110 @@ const AllProducts = () => {
     fetchData();
   }, []);
 
+  const handleDelete = (productId) => {
+    console.log("Trying to delete productId:", productId);
+    showDeleteConfirmToast(async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete product");
+        }
+
+        setProducts((prevProducts) =>
+          prevProducts.filter((p) => p.productId !== productId)
+        );
+        console.log(`Product ${productId} deleted successfully`);
+
+        // Show a success toast
+        toast.success(`Product ${productId} deleted successfully!`);
+      } catch (error) {
+        console.error("Delete error:", error.message);
+        toast.error("Failed to delete product", { duration: 3000, });
+      }
+    }); 
+  };
+
   return (
-    <div className="w-full h-screen overflow-x-hidden   p-7 bg-white">
-    
-    <div className="mb-6 flex items-center justify-between">
-      <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">All Products</h2>
-      <Link to="/add-product">
-        <button className=""><RiAddCircleLine className="w-7 h-7" /></button>
-      </Link>
-    </div>
-  
-   
-    
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 lg:px-16 gap-8">
-      {[...products].reverse().map((product, index) => (
-        <div
-          key={product.productId}
-          className="bg-white border border-gray-400 rounded-lg shadow-md p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
-        >
-          <div className="w-full h-40 flex items-center justify-center border rounded-md overflow-hidden">
-            <img
-              src={product?.productMedias[0]?.url}
-              alt={product?.title}
-              className="object-contain h-full"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800">
-              {product?.title}
-            </h3>
-            <p className="text-gray-600">{product?.description}</p>
-            
-          </div>
-        </div>
-      ))}
-    </div>
+    <div className="w-full  h-screen overflow-x-hidden   p-7 bg-slate-200">
+      <header className="mb-6 flex items-center justify-between">
+        <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">
+          All Products
+        </h2>
+        <Link to="/add-product">
+          <button className="">
+            <RiAddCircleLine className="w-7 h-7" />
+          </button>
+        </Link>
+      </header>
 
-    </div>
- 
-  
+      <div className="w-full overflow-x-auto">
+        <table className="w-4/5 mx-auto bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <thead className="bg-slate-500/40 ">
+            <tr className="h-[5rem]">
+              <th className="text-left py-3 px-4 font-bold text-gray-700 border-b">
+                Title
+              </th>
+              <th className="text-left py-3 px-4 font-bold text-gray-700 border-b">
+                Image
+              </th>
+              <th className="text-left py-3 px-4 font-bold text-gray-700 border-b">
+                Description
+              </th>
+              <th className="text-left py-3 px-4 font-bold text-gray-700 border-b"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...products].reverse().map((product) => (
+              <tr
+                key={product.productId}
+                className="group bg-slate-400/30 hover:bg-gray-300/80"
+              >
+                {/* 👆 Added group here */}
 
+                <td className="py-3 px-4 border-b font-medium text-gray-800">
+                  {product?.title}
+                </td>
+
+                <td className="py-3 px-4 border-b">
+                  <div className="w-20 h-20 overflow-hidden flex items-center justify-center">
+                    <img
+                      src={product?.productMedias[0]?.url}
+                      alt={product?.title}
+                      className="object-contain h-full"
+                    />
+                  </div>
+                </td>
+
+                <td className="py-3 px-4 border-b text-gray-600">
+                  {product?.description}
+                </td>
+
+                <td className="py-3 px-4 border-b">
+                  <div
+                    className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-400 ease-in-out
+"
+                  >
+                    <button>
+                      <FaEdit className="h-5 w-5 cursor-pointer" />
+                    </button>
+
+                    <button onClick={() => handleDelete(product.productId)}>
+                      <MdDeleteForever className="h-5 w-5 cursor-pointer" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

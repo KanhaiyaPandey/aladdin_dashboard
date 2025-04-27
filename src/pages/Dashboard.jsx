@@ -1,14 +1,14 @@
 import React from "react";
-import Sidebar from "../components/dashboardCompos/Sidebar";
-import Cards from "../components/dashboardCompos/Cards";
+import AdminSection from "../components/dashboardCompos/AdminSection";
+import AdminSidebar from "../components/dashboardCompos/AdminSidebar";
 
 const Dashboard = () => {
   return (
     <main>
-      <div className="flex bg-slate-200">
-        <Sidebar />
-        <Cards />
-       
+      <div className="flex min-h-screen bg-slate-200">
+        <AdminSidebar />
+        <AdminSection />
+        
       </div>
     </main>
   );
