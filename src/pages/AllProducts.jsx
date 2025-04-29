@@ -5,6 +5,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
+import { customFetch } from "../utils/Helpers";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -35,24 +36,31 @@ const AllProducts = () => {
     console.log("Trying to delete productId:", productId);
     showDeleteConfirmToast(async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`,
-          {
-            method: "DELETE",
-          }
-        );
+        // const response = await fetch(
+        //   `${import.meta.env.VITE_BASE_URL}/api/admin/product/delete-product/${productId}`,
+        //   {
+        //     method: "DELETE",
+        //     credentials: "include", // This is the correct option for fetch
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //   }
+        // );
 
-        if (!response.ok) {
+        const response = await customFetch.delete(`/product/delete-product/${productId}`)
+        
+
+        if (!response.status === 200) {
           throw new Error("Failed to delete product");
         }
 
         setProducts((prevProducts) =>
           prevProducts.filter((p) => p.productId !== productId)
         );
-        console.log(`Product ${productId} deleted successfully`);
+        console.log(`Product deleted successfully`);
 
         // Show a success toast
-        toast.success(`Product ${productId} deleted successfully!`);
+        toast.success(`Product deleted successfully!`);
       } catch (error) {
         console.error("Delete error:", error.message);
         toast.error("Failed to delete product", { duration: 3000, });
