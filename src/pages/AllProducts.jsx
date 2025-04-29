@@ -61,7 +61,7 @@ const AllProducts = () => {
   };
 
   return (
-    <div className="w-full  h-screen overflow-x-hidden   p-7 bg-slate-200">
+    <div className="w-full  h-screen overflow-x-hidden   p-7 bg-slate-100">
       <header className="mb-6 flex items-center justify-between">
         <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">
           All Products
@@ -93,7 +93,7 @@ const AllProducts = () => {
             {[...products].reverse().map((product) => (
               <tr
                 key={product.productId}
-                className="group bg-slate-400/30 hover:bg-gray-300/80"
+                className="group bg-slate-200/70 hover:bg-gray-300/80"
               >
                 {/* 👆 Added group here */}
 
