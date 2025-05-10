@@ -34,19 +34,24 @@ const AllProducts = () => {
     console.log("Trying to delete productId:", productId);
     showDeleteConfirmToast(async () => {
       try {
-        const response = await customFetch.delete(
-          `/product/delete-product/${productId}`
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`,
+          {
+            method: "DELETE",
+          }
         );
 
-        if (response.status !== 200) {
+        if (!response.ok) {
           throw new Error("Failed to delete product");
         }
 
         setProducts((prevProducts) =>
           prevProducts.filter((p) => p.productId !== productId)
         );
+        console.log(`Product ${productId} deleted successfully`);
 
-        toast.success(`Product deleted successfully!`);
+        // Show a success toast
+        toast.success(`Product ${productId} deleted successfully!`);
       } catch (error) {
         console.error("Delete error:", error.message);
         toast.error("Failed to delete product");
