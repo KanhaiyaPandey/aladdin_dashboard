@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const AdminSidebar = () => {
   return (
     <>
-      <main className="lg:block hidden  h-full  flex-col m-3  rounded-2xl bg-slate-300/60 w-1/5">
+      <main className="lg:block hidden  h-full shadow-xl  flex-col m-3  rounded-2xl bg-indigo-200/70 w-1/5">
         <h1 className="font-extrabold grid h-full w-full p-5 shadow-lg mb-2 items-center justify-center text-3xl">
           aladin
         </h1>

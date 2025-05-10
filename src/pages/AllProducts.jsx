@@ -5,6 +5,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
+import { customFetch } from "../utils/Helpers";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -22,9 +23,7 @@ const AllProducts = () => {
         console.log("response123: ", result);
         setProducts(result);
       } catch (err) {
-        //   setError(err.message);
-      } finally {
-        //   setLoading(false);
+        toast.error("Failed to fetch products");
       }
     };
 
@@ -35,39 +34,34 @@ const AllProducts = () => {
     console.log("Trying to delete productId:", productId);
     showDeleteConfirmToast(async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`,
-          {
-            method: "DELETE",
-          }
+        const response = await customFetch.delete(
+          `/product/delete-product/${productId}`
         );
 
-        if (!response.ok) {
+        if (response.status !== 200) {
           throw new Error("Failed to delete product");
         }
 
         setProducts((prevProducts) =>
           prevProducts.filter((p) => p.productId !== productId)
         );
-        console.log(`Product ${productId} deleted successfully`);
 
-        // Show a success toast
-        toast.success(`Product ${productId} deleted successfully!`);
+        toast.success(`Product deleted successfully!`);
       } catch (error) {
         console.error("Delete error:", error.message);
-        toast.error("Failed to delete product", { duration: 3000, });
+        toast.error("Failed to delete product");
       }
-    }); 
+    });
   };
 
   return (
-    <div className="w-full  h-screen overflow-x-hidden   p-7 bg-slate-100">
+    <div className="w-full h-screen overflow-x-hidden p-7 bg-slate-100">
       <header className="mb-6 flex items-center justify-between">
         <h2 className="text-3xl font-bold flex flex-col items-center justify-center text-gray-800">
           All Products
         </h2>
         <Link to="/add-product">
-          <button className="">
+          <button>
             <RiAddCircleLine className="w-7 h-7" />
           </button>
         </Link>
@@ -75,7 +69,7 @@ const AllProducts = () => {
 
       <div className="w-full overflow-x-auto">
         <table className="w-4/5 mx-auto bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <thead className="bg-slate-500/40 ">
+          <thead className="bg-slate-500/40">
             <tr className="h-[5rem]">
               <th className="text-left py-3 px-4 font-bold text-gray-700 border-b">
                 Title
@@ -95,8 +89,6 @@ const AllProducts = () => {
                 key={product.productId}
                 className="group bg-slate-200/70 hover:bg-gray-300/80"
               >
-                {/* 👆 Added group here */}
-
                 <td className="py-3 px-4 border-b font-medium text-gray-800">
                   {product?.title}
                 </td>
@@ -116,14 +108,10 @@ const AllProducts = () => {
                 </td>
 
                 <td className="py-3 px-4 border-b">
-                  <div
-                    className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-400 ease-in-out
-"
-                  >
-                    <button>
+                  <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-400 ease-in-out">
+                    <Link to={`/update-product/${product.productId}`}>
                       <FaEdit className="h-5 w-5 cursor-pointer" />
-                    </button>
-
+                    </Link>
                     <button onClick={() => handleDelete(product.productId)}>
                       <MdDeleteForever className="h-5 w-5 cursor-pointer" />
                     </button>

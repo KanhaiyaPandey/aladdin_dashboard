@@ -61,7 +61,7 @@ const Graphs = () => {
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-1  lg:grid-cols-2 mt-10 gap-4 w-full h-1/2 p-4 ">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer className="bg-gradient-to-br  from-indigo-200  to-slate-200 p-4 rounded-2xl shadow-lg" width="100%" height="100%">
         <BarChart
           width={500}
           height={300}
@@ -91,7 +91,7 @@ const Graphs = () => {
         </BarChart>
       </ResponsiveContainer>
 
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer className="bg-gradient-to-br  from-indigo-200  to-slate-200 p-4 rounded-2xl shadow-lg" width="100%" height="100%">
         <LineChart
           width={500}
           height={300}
