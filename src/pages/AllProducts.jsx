@@ -20,8 +20,8 @@ const AllProducts = () => {
           throw new Error("Failed to fetch data");
         }
         const result = await response.json();
-        console.log("response123: ", result);
-        setProducts(result);
+        console.log("response123: ", result.data);
+        setProducts(result.data);
       } catch (err) {
         toast.error("Failed to fetch products");
       }
