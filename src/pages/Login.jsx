@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";

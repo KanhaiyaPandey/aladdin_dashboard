@@ -5,7 +5,6 @@ import { MdDeleteForever } from "react-icons/md";
 import { RiAddCircleLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
-import { customFetch } from "../utils/Helpers";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -35,9 +34,10 @@ const AllProducts = () => {
     showDeleteConfirmToast(async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`,
+          `${import.meta.env.VITE_BASE_URL}/api/admin/product/delete-product/${productId}`,
           {
             method: "DELETE",
+            credentials: "include", 
           }
         );
 

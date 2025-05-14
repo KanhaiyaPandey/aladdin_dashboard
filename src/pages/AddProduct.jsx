@@ -51,13 +51,11 @@ const AddProduct = () => {
       });
   
       toast.success(response.data.message);
-      
+      navigate("/all-product"); 
     } catch (error) {
-      toast.error( error.message);
-      toast.error("Failed to save the product. Please try again.");
+      toast.error( error.response.data);
+      // toast.error("Failed to save the product. Please try again.");
     }
-
-    navigate("/all-product");
   };
   
 
