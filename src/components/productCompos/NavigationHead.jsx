@@ -1,27 +1,78 @@
-/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
-const NavigationHead = ({handleSaveProduct}) => {
+
+import toast from 'react-hot-toast';
+import { useRazorpay } from 'react-razorpay';
+    
+
+const NavigationHead = ({ handleSaveProduct }) => {
+
+  const { error, isLoading, Razorpay } = useRazorpay();
+
+  const handlePay = async () => {
+    try {
+      // Call your backend to create Razorpay order
+      const res = await fetch('http://localhost:8080/api/public/payments/create-order?amount=500&currency=INR', {
+        method: 'POST',
+      });
+
+      const data = await res.json();
+
+      if (!data || !data.order || !data.order.id) {
+        alert("Failed to initialize payment.");
+        return;
+      }
+
+      const options = {
+        key: 'rzp_test_I7vbeMg5LyZmbm', 
+        amount: data.order.amount, 
+        currency: data.order.currency,
+        name: "Aladdin Store",
+        description: "Test Transaction",
+        order_id: data.order.id,
+        handler: function (response) {
+          console.log(response);   
+           toast.success(response.message)
+        },
+        prefill: {
+          name: "John Doe",
+          email: "john@example.com",
+          contact: "9304738536"
+        },
+        notes: {
+          address: "Aladdin HQ"
+        },
+        theme: {
+          color: "#6366f1"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.error(err);
+      alert("Error while initiating payment");
+    }
+  };
+
   return (
-    <div className=" w-5/6 mx-auto bg-white px-10 py-4 flex items-center justify-between">
-    <div className=" flex items-center gap-x-3">
-        {/* <button>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g opacity="0.5">
-        <path d="M19 12H5" stroke="black" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 19L5 12L12 5" stroke="black" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-        </g>
-        </svg>
-        </button> */}
-
-        <span className=" text-xl font-semibold">Add Product</span>
+    <div className="w-5/6 mx-auto bg-white px-10 py-4 flex items-center justify-between">
+      <div className="flex items-center gap-x-3">
+        <span className="text-xl font-semibold">Add Product</span>
+      </div>
+      <div className="flex gap-3">
+        <button className="btn btn-outline hover:bg-gray-200 hover:text-slate-800">
+          Save As Draft
+        </button>
+        <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>
+          Save
+        </button>
+        <button className="btn btn-neutral" onClick={handlePay}>
+          Pay
+        </button>
+      </div>
     </div>
-    <div className=" flex gap-3">
-    <button className="btn btn-outline hover:bg-gray-200 hover:text-slate-800 ">Save As Draft</button>
-    <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>Save</button>
-    </div>
+  );
+};
 
-  </div>
-  )
-}
-
-export default NavigationHead
+export default NavigationHead;
