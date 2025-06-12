@@ -9,40 +9,43 @@ import { Link } from "react-router-dom";
 const AdminSidebar = () => {
   return (
     <>
-      <main className="lg:block hidden  h-full shadow-xl  flex-col m-3  rounded-2xl bg-indigo-200/70 w-1/5">
-        <h1 className="font-extrabold grid h-full w-full p-5 shadow-lg mb-2 items-center justify-center text-3xl">
-          aladin
+      <main className="lg:block hidden h-full shadow-xl sticky top-0 translate-y-4 border translate-x-3 flex-col  rounded-2xl p-4 w-2/12">
+        <h1 className="flex  text-3xl  font-bold ">
+          ALADDIN
         </h1>
 
-        <ul className="flex pl-10 flex-col justify-evenly">
+        <ul className="flex flex-col justify-center">
           
           <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-xl      cursor-pointer">
-              <IoMdCube className=" w-6 h-6" /> <h3> Products</h3>
+            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
+              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
             </li>
           </Link>
 
-          <li className="flex   items-center space-x-3  h-16 text-xl      cursor-pointer">
-            <CgMenuGridO className=" w-6 h-6" /> <h3> Categories</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl     cursor-pointer">
-            <FaUsers className=" w-6 h-6" /> <h3> Costumers</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl       cursor-pointer">
-            <TbReportAnalytics className=" w-6 h-6" /> <h3> Report</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl     cursor-pointer">
-            <IoSettings className=" w-6 h-6" /> <h3> Settings</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl     cursor-pointer">
-            <IoSettings className=" w-6 h-6" /> <h3> Charts</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl     cursor-pointer">
-            <IoSettings className=" w-6 h-6" /> <h3> Plugins</h3>
-          </li>
-          <li className="flex   items-center space-x-3  h-16 text-xl     cursor-pointer">
-            <IoSettings className=" w-6 h-6" /> <h3> Widgit</h3>
-          </li>
+                    <Link to="/all-product">
+            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
+              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
+            </li>
+          </Link>
+
+                    <Link to="/all-product">
+            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
+              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
+            </li>
+          </Link>
+
+                    <Link to="/all-product">
+            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
+              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
+            </li>
+          </Link>
+
+                    <Link to="/all-product">
+            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
+              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
+            </li>
+          </Link>
+
         </ul>
       </main>
     </>

@@ -5,10 +5,9 @@ import AdminSidebar from "../components/dashboardCompos/AdminSidebar";
 const Dashboard = () => {
   return (
     <main>
-      <div className="flex min-h-screen bg-indigo-100">
+      <div className="flex min-h-screen lato h-full justify-center">
         <AdminSidebar />
-        <AdminSection />
-        
+        <AdminSection />       
       </div>
     </main>
   );
