@@ -8,7 +8,7 @@ import AdminHeader from "./AdminHeader";
 
 const AdminSection = () => {
   return (
-    <main className="flex flex-col flex-1 m-4 w-10/12 lato text-slate-900 px-4 gap-8">
+    <main className="flex flex-col flex-1 m-4 w-full lato text-slate-900 px-4 gap-8 h-auto">
       <AdminHeader />
 
       <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-4 gap-4 w-full">

@@ -60,9 +60,9 @@ const AddProduct = () => {
   
 
   return (
-    <>
+    <main className="w-10/12 flex flex-col items-center justify-center">
     <NavigationHead handleSaveProduct={handleSaveProduct}/>
-    <div className=" bg-white p-7 w-4/5 mx-auto lato grid grid-cols-2 gap-x-6 ">
+    <div className="  mx-auto px-10  w-full lato grid grid-cols-2 gap-x-6 ">
       
       <div className=" w-full grid grid-cols-1 gap-y-6">
         <div className=" w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -106,7 +106,7 @@ const AddProduct = () => {
 
 
     </div>
-    </>
+    </main>
   );
 };
 

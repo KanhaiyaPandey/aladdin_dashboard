@@ -180,7 +180,7 @@ const handleShipping = async () => {
 
 
   return (
-    <div className="w-5/6 mx-auto bg-white px-10 py-4 flex items-center justify-between">
+    <div className="w-full mx-auto px-10 py-4 flex items-center justify-between">
       <div className="flex items-center gap-x-3">
         <span className="text-xl font-semibold">Add Product</span>
       </div>
@@ -191,7 +191,7 @@ const handleShipping = async () => {
         <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>
           Save
         </button>
-        <button className="btn btn-neutral" onClick={handlePay}>
+        {/* <button className="btn btn-neutral" onClick={handlePay}>
           Pay
         </button>
 
@@ -201,7 +201,7 @@ const handleShipping = async () => {
 
       <button className="btn btn-neutral" onClick={handleShipping}>
           shipping
-        </button>
+        </button> */}
 
       </div>
     </div>

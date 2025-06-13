@@ -1,50 +1,103 @@
-import React from "react";
-import { TbLayoutDashboardFilled, TbReportAnalytics } from "react-icons/tb";
-import { IoSettings } from "react-icons/io5";
-import { IoMdCube } from "react-icons/io";
-import { FaUsers } from "react-icons/fa";
-import { CgMenuGridO } from "react-icons/cg";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AppstoreAddOutlined, AppstoreOutlined, HomeOutlined, ProductOutlined } from "@ant-design/icons";
+// import CategoryIcon from '@mui/icons-material/Category';
+
+const menu = [
+  {
+    path:"overview",
+    name:"Overview",
+    icon:  <HomeOutlined /> ,
+    submenu:[]
+    
+  },
+    {
+    path:"all-product",
+    name:"Products",
+    icon:  <ProductOutlined />,
+    submenu:[
+        {
+          path:"all-product",
+          name:"All Products",
+          icon:<AppstoreOutlined />
+        },
+        {
+          path: "add-product",
+          name:"Add Product",
+          icon:<AppstoreAddOutlined />
+        }
+    ]
+  },
+    {
+    path:"categories",
+    name:"Categories",
+    icon:  <HomeOutlined /> ,
+    submenu:[]
+    
+  },
+]
 
 const AdminSidebar = () => {
+  const location = useLocation();
+  const [currentPath, setCurrentPath] = useState("overview");
+
+  useEffect(() => {
+    // Extract path without leading slash, or fallback to 'overview'
+    const path = location.pathname.split("/").filter(Boolean).pop() || "overview";
+    setCurrentPath(path);
+    
+  }, [location]);
+
+
+  const isParentActive = (item) => {
+    if (currentPath === item.path) return true;
+    return item.submenu?.some((sub) => currentPath === sub.path);
+  };
+
   return (
     <>
-      <main className="lg:block hidden h-full shadow-xl sticky top-0 translate-y-4 border translate-x-3 flex-col  rounded-2xl p-4 w-2/12">
-        <h1 className="flex  text-3xl  font-bold ">
+      <main className="lg:block hidden shadow-xl sticky top-0 translate-y-4 border translate-x-3 flex-col  rounded-2xl p-4 w-full h-auto">
+        <Link to="/overview" className="flex  text-3xl  font-bold  border-b items-center justify-center pb-3 ">
           ALADDIN
-        </h1>
+        </Link>
 
-        <ul className="flex flex-col justify-center">
+        <ul className="flex flex-col justify-center mt-10 gap-4 transition-all duration-300 ease-in-out">
           
-          <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
-              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
-            </li>
-          </Link>
+         {menu.map((item, index) => (
 
-                    <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
-              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
-            </li>
-          </Link>
+          <li key={index}>
+            <Link
+              to={`/${item.path}`}
+              className={`flex items-center space-x-3 p-2 rounded-lg ${
+                isParentActive(item) ? "bg-base-300  transition-all duration-300 ease-in-out font-semibold" : ""
+              }`}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </Link>
 
-                    <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
-              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
-            </li>
-          </Link>
+          {item.submenu.length > 0 && (
+            <ul className={`ml-6 mt-1 space-y-1 overflow-hidden transition-all duration-300 ease-in-out`}>
+              {item.submenu.map((sub, subIndex) => (
+                <li key={subIndex}>
+                  <Link
+                    to={`/${sub.path}`}
+                    className={`block p-2 flex items-center gap-x-2  rounded-md text-sm  ${
+                      currentPath === sub.path ? "bg-base-300 transition-all duration-300 ease-in-out font-medium" : ""
+                    }`}
+                  >
+                   
+                    <span> {sub.icon}</span>
+                      <span>{sub.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
 
-                    <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
-              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
-            </li>
-          </Link>
 
-                    <Link to="/all-product">
-            <li className="flex   items-center space-x-3  h-16 text-sm cursor-pointer">
-              <IoMdCube className=" w-4 h-4" /> <h3> Products</h3>
-            </li>
-          </Link>
 
         </ul>
       </main>

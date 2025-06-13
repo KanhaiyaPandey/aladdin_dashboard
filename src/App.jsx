@@ -5,6 +5,8 @@ import Login from "./pages/Login"
 import UpdateProduct from './pages/UpdateProduct'
 import AllProducts from './pages/AllProducts'
 import Dashboard from './pages/Dashboard'
+import AdminSection from './components/dashboardCompos/AdminSection'
+import Error from './pages/Error'
 
 
 const router = createBrowserRouter([
@@ -12,22 +14,29 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login/>
   },
-
-  {
-    path: "/add-product",
-    element: <AddProduct/>
-  },
   {
     path: "/update-product/:productId",
     element: <UpdateProduct />
   },
   {
-    path: "/all-product",
-    element: <AllProducts/>
-  },
-  {
     path: "/",
-    element: <Dashboard/>
+    element: <Dashboard/>,
+    errorElement: <Error/>,
+    children:[
+      {
+        index:true,
+        path:"overview",
+        element:<AdminSection /> ,
+      },
+        {
+          path: "all-product",
+          element: <AllProducts/>,
+      },     
+       {
+          path: "add-product",
+          element: <AddProduct/>,
+       },
+    ]
   }
   
 ])

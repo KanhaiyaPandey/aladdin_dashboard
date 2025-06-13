@@ -3,18 +3,16 @@ import { MdAdminPanelSettings } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { FaMessage } from "react-icons/fa6";
 import { IoIosNotifications } from "react-icons/io";
+import { AppstoreOutlined, NotificationOutlined, WechatOutlined } from "@ant-design/icons";
 
 const AdminHeader = () => {
   return (
     <>
-      <header className="flex justify-between items-center  ">
-        <h1 className="font-bold  text-2xl p-5">Dashboard </h1>
-        <menuitems className=" hidden lg:block md:block">
-          <div className="flex  items-center  space-x-4">
-            <searchbar className="relative flex items-center justify-center ">
+      <header className="flex justify-between items-center w-full  ">
+        <searchbar className="relative flex items-center justify-center ">
               <input
                 type="text"
-                className=" p-2 px-4  border border-gray-300 rounded-3xl shadow-lg focus:outline-none "
+                className=" p-2 px-4  border border-gray-300 rounded-3xl shadow-sm focus:outline-none "
                 placeholder="Search here..."
               />
               <button
@@ -24,9 +22,21 @@ const AdminHeader = () => {
                 <IoSearch size={20} />
               </button>
             </searchbar>
-            <IoIosNotifications className="h-7 w-7 " />
-            <FaMessage className="h-4 w-4 " />
-            <MdAdminPanelSettings className="h-6 w-6 mr-5" />
+        <menuitems className=" hidden lg:block md:block">
+          <div className="flex  items-center gap-x-4">
+            <button className=" p-2 flex items-center justify-center rounded-full ">
+                   <NotificationOutlined style={{ fontSize: '20px' }} className=""/>
+            </button>
+
+            <button>
+                   <WechatOutlined style={{ fontSize: '20px' }} className=""/>
+            </button>
+
+            <button>
+                 <AppstoreOutlined style={{ fontSize: '20px' }} className=""/>
+            </button>
+       
+      
           </div>
         </menuitems>
       </header>
