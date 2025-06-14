@@ -10,6 +10,7 @@ import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
 import { useNavigate } from "react-router-dom";
+import Attributes from "../components/productCompos/Attributes";
 
 
 
@@ -103,8 +104,9 @@ const AddProduct = () => {
 
       <div className=" w-full flex flex-col gap-y-6">
         <MediaUpload productData={productData} setProductData={setProductData}/>
+        <Attributes productData={productData} setProductData={setProductData}/>
+        <Variants productData={productData}/>
         <CategorySelection productData={productData} setProductData={setProductData}/>
-        <Variants/>
       </div>
 
 
