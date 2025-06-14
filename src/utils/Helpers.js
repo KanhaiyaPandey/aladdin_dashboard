@@ -17,3 +17,7 @@ export const publicFetch = axios.create({
     withCredentials: true, // Ensures cookies are sent
 });
 
+export const authFetch = axios.create({
+    baseURL: `${import.meta.env.VITE_BASE_URL}/user`,
+    withCredentials: true, // Ensures cookies are sent
+});

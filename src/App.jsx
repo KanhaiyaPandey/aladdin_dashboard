@@ -7,16 +7,21 @@ import AllProducts from './pages/AllProducts'
 import Dashboard from './pages/Dashboard'
 import AdminSection from './components/dashboardCompos/AdminSection'
 import Error from './pages/Error'
+import { LoginAction } from './utils/actions'
+import { store } from './store'
+import { userAuthLoader } from './utils/loaders'
 
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login/>
+    element: <Login/>,
+    action:LoginAction(store),
   },
   {
     path: "/",
     element: <Dashboard/>,
+    loader:userAuthLoader(store),
     errorElement: <Error/>,
     children:[
       {

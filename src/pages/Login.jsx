@@ -17,37 +17,7 @@ const Login = () => {
     
 
   
-    const handleLogin = async (e) => {
-        console.log(isSubmitting);
-        
-        e.preventDefault();
-      
-        try {
-          const response = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/user/login`,
-            {
-              email: email,
-              password: password,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
-          toast.success("login successfully")
-          setError("");
-          navigate("/");
-        } catch (err) {
-          console.error("Login error:", err.response || err);
-          setError(
-            err.response?.data?.message || "Invalid email or password. Please try again."
-          );
-        }
-        console.log(isSubmitting);
-        
-      };
+
       
   
     return (
@@ -55,7 +25,6 @@ const Login = () => {
         <Form
            method='post'
           className="bg-white p-6  w-1/3 rounded-xl shadow-md "
-          onSubmit={handleLogin}
         >
           <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
   
@@ -67,6 +36,7 @@ const Login = () => {
             variant="filled"
               type="email"
               id="email"
+              name="email"
               className="w-full px-3 py-2  h-12"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -82,6 +52,7 @@ const Login = () => {
             variant="filled"
             type="password"
             id="password"
+            name="password"
             className="w-full px-3 py-2 h-12"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

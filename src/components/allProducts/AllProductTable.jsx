@@ -47,8 +47,14 @@ const AllProductTable = ({products, handleDelete}) => {
             </div>
           </div>
         </td>
-        <td>
-          Zemlak, Daniel and Leannon
+        <td className=" flex items-center gap-1">
+            {item?.productCategories?.length > 0 ? (
+            <span>
+              {item.productCategories.map(category => category.title).join(', ')}
+            </span>
+          ) : (
+            <span>none</span>
+          )}
         
   
         </td>
