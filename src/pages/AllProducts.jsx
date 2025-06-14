@@ -61,7 +61,7 @@ useEffect(() => {
   };
 
 return (
-  <main className="flex flex-col flex-1 m-4 w-full lato text-slate-900 px-4 gap-8 h-auto">
+  <main className="flex flex-col flex-1 m-4  lato text-slate-900 px-4 gap-8 ">
     <AdminHeader />
 
     {loading ? (

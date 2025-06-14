@@ -2,7 +2,7 @@
 import { Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLoaderData } from "react-router-dom";
 import toast from "react-hot-toast";
 import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
@@ -14,23 +14,9 @@ import { customFetch } from "../utils/Helpers";
 const UpdateProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { product } = useLoaderData();
 
-  const [productData, setProductData] = useState({
-    title: "",
-    description: "",
-    costPrice: "",
-    sellPrice: "",
-    compareAtPrice: "",
-    sku: "",
-    barcode: "",
-    allowBackorder: true,
-    stockStatus: "IN_STOCK",
-    attributes: [],
-    productCategories: [],
-    productMedias: [],
-    variants: [],
-    warehouseData: [],
-  });
+  const [productData, setProductData] = useState(product);
 
   useEffect(() => {    
     const fetchData = async () => {

@@ -1,9 +1,8 @@
-import React from "react";
-import AdminSection from "../components/dashboardCompos/AdminSection";
 import AdminSidebar from "../components/dashboardCompos/AdminSidebar";
 import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {
+
   return (
     <main>
       <div className="flex min-h-screen lato h-full justify-center">
@@ -11,8 +10,12 @@ const Dashboard = () => {
              <AdminSidebar />
         </div>
 
+        <div className=" w-10/12">
+                 <Outlet/>
+        </div>
+
      
-           <Outlet/>
+  
        
    
       </div>

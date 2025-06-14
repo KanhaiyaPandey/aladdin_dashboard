@@ -9,7 +9,9 @@ import AdminSection from './components/dashboardCompos/AdminSection'
 import Error from './pages/Error'
 import { LoginAction } from './utils/actions'
 import { store } from './store'
-import { userAuthLoader } from './utils/loaders'
+import { UpdateProductLoader, userAuthLoader } from './utils/loaders'
+import Order from './pages/Order'
+import Categories from './pages/Categories'
 
 
 const router = createBrowserRouter([
@@ -39,7 +41,16 @@ const router = createBrowserRouter([
        },
          {
           path: "/update-product/:id",
-          element: <UpdateProduct />
+          element: <UpdateProduct />,
+          loader:UpdateProductLoader,
+        },
+         {
+          path: "/categories",
+          element: <Categories />,
+        },
+        {
+          path: "/orders",
+          element: <Order />,
         },
     ]
   }

@@ -4,7 +4,7 @@ import { Input } from "antd";
 const Pricing = ({productData, setProductData}) => {
   return (
     <div className=" w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
-      <h1 className=" text-xl ">Pricing</h1>
+      <h1 className=" text-xl font-semibold ">Pricing</h1>
 
       <div className=" w-full flex gap-3 items-center justify-center ">
         <div className=" w-1/2 flex flex-col gap-2">

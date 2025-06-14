@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AppstoreAddOutlined, AppstoreOutlined, HomeOutlined, ProductOutlined } from "@ant-design/icons";
+import AutoAwesomeMosaicIcon from '@mui/icons-material/AutoAwesomeMosaic';
+import MarginIcon from '@mui/icons-material/Margin';
+import LoopIcon from '@mui/icons-material/Loop';
+import WalletIcon from '@mui/icons-material/Wallet';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 // import CategoryIcon from '@mui/icons-material/Category';
 
 const menu = [
@@ -31,10 +36,36 @@ const menu = [
     {
     path:"categories",
     name:"Categories",
-    icon:  <HomeOutlined /> ,
+    icon:  <AutoAwesomeMosaicIcon fontSize="small" /> ,
     submenu:[]
     
   },
+     {
+    path:"orders",
+    name:"Orders",
+    icon:  <MarginIcon fontSize="small" /> ,
+    submenu:[]
+    
+  },
+
+      {
+    path:"return-orders",
+    name:"Return Managemnet",
+    icon:  <LoopIcon fontSize="small" />,
+    submenu:[
+        {
+          path:"return-orders",
+          name:"Return Requests",
+          icon:<KeyboardReturnIcon fontSize="small" />
+        },
+        {
+          path: "refund",
+          name:"Refund",
+          icon:<WalletIcon fontSize="small" />
+        }
+    ]
+  },
+
 ]
 
 const AdminSidebar = () => {
@@ -61,7 +92,7 @@ const AdminSidebar = () => {
           ALADDIN
         </Link>
 
-        <ul className="flex flex-col justify-center mt-10 gap-4 transition-all duration-300 ease-in-out">
+        <ul className="flex flex-col justify-center mt-10 gap-2 transition-all duration-300 ease-in-out">
           
          {menu.map((item, index) => (
 
@@ -69,7 +100,7 @@ const AdminSidebar = () => {
             <Link
               to={`/${item.path}`}
               className={`flex items-center space-x-3 p-2 rounded-lg ${
-                isParentActive(item) ? "bg-base-300  transition-all duration-300 ease-in-out font-semibold" : ""
+                isParentActive(item) ? " bg-[#ffddaeb9]  transition-all duration-300 ease-in-out font-semibold" : ""
               }`}
             >
               {item.icon}
@@ -83,7 +114,7 @@ const AdminSidebar = () => {
                   <Link
                     to={`/${sub.path}`}
                     className={`block p-2 flex items-center gap-x-2  rounded-md text-sm  ${
-                      currentPath === sub.path ? "bg-base-300 transition-all duration-300 ease-in-out font-medium" : ""
+                      currentPath === sub.path ? "bg-[#eed0a56c] transition-all duration-300 ease-in-out font-medium" : ""
                     }`}
                   >
                    

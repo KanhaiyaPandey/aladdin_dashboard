@@ -5,7 +5,7 @@ import { Input } from "antd";
 const Inventory = ({productData, setProductData}) => {
   return (
     <div className=" w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
-      <h1 className=" text-xl ">Inventory</h1>
+      <h1 className=" text-xl font-semibold ">Inventory</h1>
 
       <div className=" grid grid-cols-2 gap-3">
         <div className=" w-full flex flex-col gap-2">
