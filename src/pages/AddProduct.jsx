@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
   const navigate = useNavigate();
 
+  const [activePage, setActivePage] = useState("add product");
   const [productData, setProductData] = useState({
     title: "",
     description:"",
@@ -61,7 +62,7 @@ const AddProduct = () => {
 
   return (
     <main className="w-10/12 flex flex-col items-center justify-center">
-    <NavigationHead handleSaveProduct={handleSaveProduct}/>
+    <NavigationHead handleSaveProduct={handleSaveProduct} activePage={"add product"}/>
     <div className="  mx-auto px-10  w-full lato grid grid-cols-2 gap-x-6 ">
       
       <div className=" w-full grid grid-cols-1 gap-y-6">
@@ -74,6 +75,7 @@ const AddProduct = () => {
                 ...productData,
                 title: e.target.value
               })} 
+              value={productData.title}
               variant="filled" className=" mt-2 h-12" />
           </div>
           <div className="w-full">
@@ -86,6 +88,7 @@ const AddProduct = () => {
                 ...productData,
                 description : e.target.value
               })} 
+              value={productData.description}
               autoSize={{ minRows: 3, maxRows: 5 }}
             />
           </div>

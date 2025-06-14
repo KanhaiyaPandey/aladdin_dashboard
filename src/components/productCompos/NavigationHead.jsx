@@ -7,7 +7,7 @@ import { useRazorpay } from 'react-razorpay';
 import { userFetch } from '../../utils/Helpers';
     
 
-const NavigationHead = ({ handleSaveProduct }) => {
+const NavigationHead = ({ handleSaveProduct, activePage }) => {
 
   const { error, isLoading, Razorpay } = useRazorpay();
 
@@ -182,7 +182,7 @@ const handleShipping = async () => {
   return (
     <div className="w-full mx-auto px-10 py-4 flex items-center justify-between">
       <div className="flex items-center gap-x-3">
-        <span className="text-xl font-semibold">Add Product</span>
+        <span className="text-xl font-semibold capitalize">{activePage}</span>
       </div>
       <div className="flex gap-3">
         <button className="btn btn-outline hover:bg-gray-200 hover:text-slate-800">

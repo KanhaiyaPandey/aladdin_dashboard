@@ -15,10 +15,6 @@ const router = createBrowserRouter([
     element: <Login/>
   },
   {
-    path: "/update-product/:productId",
-    element: <UpdateProduct />
-  },
-  {
     path: "/",
     element: <Dashboard/>,
     errorElement: <Error/>,
@@ -36,6 +32,10 @@ const router = createBrowserRouter([
           path: "add-product",
           element: <AddProduct/>,
        },
+         {
+          path: "/update-product/:id",
+          element: <UpdateProduct />
+        },
     ]
   }
   

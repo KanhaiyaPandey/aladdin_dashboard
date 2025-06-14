@@ -12,7 +12,7 @@ import NavigationHead from "../components/productCompos/NavigationHead";
 import { customFetch } from "../utils/Helpers";
 
 const UpdateProduct = () => {
-  const { productId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [productData, setProductData] = useState({
@@ -32,51 +32,41 @@ const UpdateProduct = () => {
     warehouseData: [],
   });
 
-  useEffect(() => {
+  useEffect(() => {    
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/public/product/${productId}`
+          `${import.meta.env.VITE_BASE_URL}/api/public/product/${id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch product data");
         }
-        const result = await response.json();
-        setProductData(result);
+        const result = await response.json();      
+        setProductData(result.data);
       } catch (err) {
         toast.error("Failed to load product data");
       }
     };
 
-    if (productId) fetchData();
-  }, [productId]);
+    if (id) fetchData();
+  }, [id]);
 
   const handleUpdateProduct = async () => {
     try {
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(productData));
-
-      const response = await customFetch.put(
-        `/update-product/${productId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
+     const response = await customFetch.put(`/product/update-product/${id}`, productData)
       toast.success(response.data.message);
-      navigate("/all-product");
+      navigate(`/update-product/${id}`);
     } catch (error) {
       toast.error(error.message || "Failed to update the product.");
     }
   };
 
+  
+
   return (
-    <>
-      <NavigationHead handleSaveProduct={handleUpdateProduct} />
-      <div className="bg-white p-7 w-4/5 mx-auto lato grid grid-cols-2 gap-x-6">
+     <main className="w-10/12 flex flex-col items-center justify-center">
+      <NavigationHead handleSaveProduct={handleUpdateProduct} activePage={"update product"} />
+      <div className=" p-7 w-full mx-auto lato grid grid-cols-2 gap-x-6">
         {/* Left side */}
         <div className="w-full grid grid-cols-1 gap-y-6">
           <div className="w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -128,7 +118,7 @@ const UpdateProduct = () => {
           />
         </div>
       </div>
-    </>
+    </main>
   );
 };
 
