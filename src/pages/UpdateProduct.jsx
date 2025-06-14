@@ -50,7 +50,7 @@ const UpdateProduct = () => {
   
 
   return (
-     <main className="w-10/12 flex flex-col items-center justify-center">
+     <main className=" h-full flex flex-col items-center justify-center">
       <NavigationHead handleSaveProduct={handleUpdateProduct} activePage={"update product"} />
       <div className=" p-7 w-full mx-auto lato grid grid-cols-2 gap-x-6">
         {/* Left side */}
