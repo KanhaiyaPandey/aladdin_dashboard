@@ -14,6 +14,7 @@ import Order from './pages/Order'
 import Categories from './pages/Categories'
 import Collections from './pages/Collections'
 import CreateCategory from './pages/CreateCategory'
+import CreateCollection from './pages/CreateCollection'
 
 
 const router = createBrowserRouter([
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
          {
           path: "/collections",
           element: <Collections />,
+        },
+         {
+          path: "/create-collection",
+          element: <CreateCollection />,
         },
         {
           path: "/orders",

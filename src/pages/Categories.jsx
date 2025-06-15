@@ -28,10 +28,10 @@ const Categories = () => {
           <img src="/nothing.svg" alt="" className="w-full h-44" />
           <div className="flex flex-col items-center justify-center">
             <h1 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-3xl">
-              No Category Found
+              Create categories to organize your products
             </h1>
             <p className="mt-4 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
-              Sorry, You haven't created any category yet.
+              Organize your products with categories to help customers easily find what they need.
             </p>
             <div className="mt-8 flex items-center justify-center gap-x-6">
               <Link
