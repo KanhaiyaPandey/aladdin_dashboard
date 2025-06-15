@@ -31,6 +31,33 @@ const Attributes = ({productData, setProductData}) => {
     attributes: updatedAttrNames,
     variants: updatedVariants,
   }));
+
+
+    if (
+    productData.attributes?.length &&
+    productData.variants?.length &&
+    addedAttributes.length === 0
+  ) {
+    const attributeNames = productData.attributes;
+
+    // Transpose variant options to get values per attribute
+    const transposedOptions = productData.variants.reduce((acc, variant) => {
+      variant.options.forEach((option, index) => {
+        if (!acc[index]) acc[index] = new Set();
+        acc[index].add(option);
+      });
+      return acc;
+    }, []);
+
+    const reconstructedAttributes = attributeNames.map((name, index) => ({
+      name,
+      values: Array.from(transposedOptions[index] || []),
+    }));
+
+    setAddedAttributes(reconstructedAttributes);
+  }
+
+
 }, [addedAttributes]);
 
 

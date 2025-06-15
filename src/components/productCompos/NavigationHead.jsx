@@ -5,6 +5,8 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRazorpay } from 'react-razorpay';
 import { userFetch } from '../../utils/Helpers';
+import { RollbackOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
     
 
 const NavigationHead = ({ handleSaveProduct, activePage }) => {
@@ -182,6 +184,7 @@ const handleShipping = async () => {
   return (
     <div className="w-full mx-auto px-10 py-4 flex items-center justify-between">
       <div className="flex items-center gap-x-3">
+        <Link to="/all-product" className='btn' title='back'><RollbackOutlined /></Link>
         <span className="text-xl font-semibold capitalize">{activePage}</span>
       </div>
       <div className="flex gap-3">

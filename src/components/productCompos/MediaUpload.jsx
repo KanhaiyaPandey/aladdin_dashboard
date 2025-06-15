@@ -107,7 +107,7 @@ const MediaUpload = ({ productData, setProductData }) => {
       <h1 className="text-xl font-semibold">Product Medias</h1>
 
       <div
-        className={`w-full flex gap-3 justify-center cursor-pointer rounded-2xl p-2 min-h-[29vh] ${
+        className={`w-full flex gap-3  cursor-pointer rounded-2xl p-2 min-h-[29vh] ${
           dragging ? "bg-gray-300" : ""
         } transition-all duration-300 ease-in-out`}
         onDragOver={handleDragOver}
@@ -135,8 +135,8 @@ const MediaUpload = ({ productData, setProductData }) => {
         )}
 
         {medias.length > 0 && (
-          <div className=" w-full flex flex-col items-center justify-center gap-2">
-          <section className=" flex items-center justify-center gap-2">
+          <div className=" w-full flex flex-col  gap-2">
+          <section className=" flex  gap-2">
             <div className=" w-[210px] rounded-lg relative bg-white border h-[210px] aspect-square shadow-md">
               {medias[0].uploading ? (
                 <div className="skeleton rounded-lg w-full h-full aspect-square"></div>

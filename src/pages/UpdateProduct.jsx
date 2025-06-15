@@ -10,6 +10,8 @@ import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import { customFetch } from "../utils/Helpers";
+import Attributes from "../components/productCompos/Attributes";
+import Variants from "../components/productCompos/Variants";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -98,6 +100,8 @@ const UpdateProduct = () => {
             productData={productData}
             setProductData={setProductData}
           />
+          <Attributes productData={productData} setProductData={setProductData}/>
+       {productData.variants.length > 0 && <Variants productData={productData} setProductData={setProductData}/>}
           <CategorySelection
             productData={productData}
             setProductData={setProductData}
