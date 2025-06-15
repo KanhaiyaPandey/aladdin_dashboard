@@ -12,6 +12,8 @@ import { store } from './store'
 import { UpdateProductLoader, userAuthLoader } from './utils/loaders'
 import Order from './pages/Order'
 import Categories from './pages/Categories'
+import Collections from './pages/Collections'
+import CreateCategory from './pages/CreateCategory'
 
 
 const router = createBrowserRouter([
@@ -47,6 +49,14 @@ const router = createBrowserRouter([
          {
           path: "/categories",
           element: <Categories />,
+        },
+         {
+          path: "/create-category",
+          element: <CreateCategory />,
+        },
+         {
+          path: "/collections",
+          element: <Collections />,
         },
         {
           path: "/orders",

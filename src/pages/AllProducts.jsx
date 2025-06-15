@@ -74,9 +74,9 @@ return (
       </div>
     ) : (
       <div className="w-full h-full flex flex-col gap-4 items-center justify-center">
-        <img src="/nothing.svg" alt="" className="w-full h-80" />
+        <img src="/nothing.svg" alt="" className="w-full h-72" />
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">
+          <h1 className="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-6xl">
             No Product Found
           </h1>
           <p className="mt-4 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
@@ -89,7 +89,7 @@ return (
             >
               Add Product
             </Link>
-            <Link to="/" className="text-sm font-semibold text-gray-900">
+            <Link to="/overview" className="text-sm font-semibold text-gray-900">
               Go back <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
