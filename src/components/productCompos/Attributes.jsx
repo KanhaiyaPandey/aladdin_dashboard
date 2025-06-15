@@ -1,14 +1,38 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 import { Input, Select, Tag } from "antd"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { generateCombinations } from "../../utils/Helpers";
+import toast from "react-hot-toast";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const Attributes = ({productData, setProductData}) => {
   const [attributeName, setAttributeName] = useState("");
   const [attributeValues, setAttributesValues] = useState([]);
   const [allValues, setAllValues] = useState([]);
   const [addedAttributes, setAddedAttributes] = useState([]);
+
+
+  useEffect(() => {
+  const updatedAttrNames = addedAttributes.map(attr => attr.name);
+  const updatedAllValues = addedAttributes.map(attr => attr.values);
+
+  const combinations = generateCombinations(updatedAllValues);
+  const updatedVariants = combinations.map((combo) => ({
+    options: combo,
+    costPrice: "",
+    compareAtPrice: "",
+    variantMedias: [],
+    variantWarehouseData: [],
+  }));
+
+  setProductData((prev) => ({
+    ...prev,
+    attributes: updatedAttrNames,
+    variants: updatedVariants,
+  }));
+}, [addedAttributes]);
+
 
 
   const handleChange = (values) => {
@@ -35,21 +59,45 @@ const Attributes = ({productData, setProductData}) => {
     variantWarehouseData: []
   }));
 
-//   setProductData((prev) => ({
-//     ...prev,
-//     attributes: updatedAttributes,
-//     variants: structuredVariants
-//   }));
-
     setProductData((prev) => ({
       ...prev,
       attributes: updatedAttributes,
        variants: structuredVariants
     }));
 
+    toast.success("variants created")
+
     setAttributeName("");
     setAttributesValues([]);
   };
+
+const handleDelete = (indexToDelete) => {
+  const updatedAttributes = addedAttributes.filter((_, index) => index !== indexToDelete);
+  setAddedAttributes(updatedAttributes);
+
+  const updatedAttrNames = updatedAttributes.map(attr => attr.name);
+  const updatedAllValues = updatedAttributes.map(attr => attr.values);
+
+  const combinations = generateCombinations(updatedAllValues);
+  const updatedVariants = combinations.map((combo) => ({
+    options: combo,
+    costPrice: "",
+    compareAtPrice: "",
+    variantMedias: [],
+    variantWarehouseData: [],
+  }));
+
+  setProductData((prev) => ({
+    ...prev,
+    attributes: updatedAttrNames,
+    variants: updatedVariants,
+  }));
+};
+
+const handleEdit = () =>{
+
+}
+
 
 
 
@@ -84,7 +132,7 @@ const Attributes = ({productData, setProductData}) => {
 
             { addedAttributes.map((attribute, index) =>(
 
-            <div key={index} className=" px-3 py-2 flex flex-col gap-2 rounded-lg bg-gray-100 w-full shadow-md text-sm">
+            <div key={index} className=" relative px-3 py-2 flex flex-col gap-2 rounded-lg bg-gray-100 w-full shadow-md text-sm">
                 <div className=" flex items-center w-full gap-3">
                     <span>Name:</span>
                      <span>{attribute.name}</span>       
@@ -95,6 +143,11 @@ const Attributes = ({productData, setProductData}) => {
                     {attribute.values?.map((value, index) =>(
                         <span className=" px-3 py-1 min-w-10 rounded-lg bg-[#C6E7FF] flex items-center justify-center" key={index}>{value}</span>
                     ))}      
+                </div>
+
+                <div className=" absolute top-2 right-2 flex items-center gap-4">
+                  <button onClick={() => handleEdit} className=""><EditOutlined /></button>
+                   <button onClick={() => handleDelete(index)} className=""><DeleteOutlined /></button>
                 </div>
 
             </div>
