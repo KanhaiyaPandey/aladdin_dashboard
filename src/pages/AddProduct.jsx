@@ -10,6 +10,7 @@ import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
 import { useNavigate } from "react-router-dom";
+import Attributes from "../components/productCompos/Attributes";
 
 
 
@@ -63,7 +64,7 @@ const AddProduct = () => {
   return (
     <main className=" flex flex-col items-center justify-center">
     <NavigationHead handleSaveProduct={handleSaveProduct} activePage={"add product"}/>
-    <div className="  mx-auto px-10  w-full lato grid grid-cols-2 gap-x-6 ">
+    <div className=" mx-auto px-10 w-full lato grid grid-cols-2 gap-x-6 items-start">
       
       <div className=" w-full grid grid-cols-1 gap-y-6">
         <div className=" w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -103,8 +104,9 @@ const AddProduct = () => {
 
       <div className=" w-full flex flex-col gap-y-6">
         <MediaUpload productData={productData} setProductData={setProductData}/>
+        <Attributes productData={productData} setProductData={setProductData}/>
+       {productData.variants.length > 0 && <Variants productData={productData} setProductData={setProductData}/>}
         <CategorySelection productData={productData} setProductData={setProductData}/>
-        <Variants/>
       </div>
 
 
