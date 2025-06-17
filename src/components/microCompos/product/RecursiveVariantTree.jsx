@@ -30,11 +30,11 @@ const RecursiveVariantTree = ({ variants }) => {
                     </div>
             </div>
           ) : (
-            <div className="collapse bg-base-100 p-0 m-0">
+            <div className="collapse collapse-arrow  bg-base-100 p-0 m-0">
               <input type="checkbox" />
               <div className="collapse-title font-semibold">
-                <div className="flex items-center justify-between rounded-xl gap-2 bg-gray-100 p-3">
-                    <div className=" flex items-center gap-2">
+                <div className="flex items-center justify-between rounded-xl gap-2 bg-gray-100 p-3 ">
+                    <div className=" flex items-center gap-2 z-10">
                         <input type="checkbox" />
                          <div className=" w-10 h-10 rounded-md bg-[#ffddaeb9]">
                             <img src="" alt="" />
