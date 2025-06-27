@@ -14,7 +14,7 @@ export const LoginAction = (store) => async ({request}) =>{
       console.log(user);
       store.dispatch(loginUser({ user }));        
       toast.success('logged in successfully');
-      return redirect('/overview');
+      return redirect('/');
     } catch (error) {
       console.log(error);
       const errorMessage =

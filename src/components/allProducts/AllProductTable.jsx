@@ -39,7 +39,7 @@ const AllProductTable = ({products, handleDelete}) => {
               <div className=" rounded-xl h-12 w-12">
                 <img
                   src={ item?.productMedias.length > 0 ? item?.productMedias[0]?.url : "https://img.daisyui.com/images/profile/demo/2@94.webp"}
-                  alt="image media" />
+                  alt="image media" className=" object-contain" />
               </div>
             </div>
             <div>

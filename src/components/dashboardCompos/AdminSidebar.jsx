@@ -16,7 +16,7 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 const menu = [
   {
-    path: "overview",
+    path: "",
     name: "Overview",
     icon: <HomeOutlined />,
     submenu: [],

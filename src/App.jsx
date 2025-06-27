@@ -30,8 +30,7 @@ const router = createBrowserRouter([
     errorElement: <Error/>,
     children:[
       {
-        index:true,
-        
+        index:true, 
         element:<AdminSection /> ,
       },
         {
