@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import {  DeleteOutlined, InboxOutlined, RollbackOutlined } from "@ant-design/icons";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
 import { Input, message, Upload } from "antd";
@@ -17,19 +18,20 @@ const CreateCategory = () => {
     description: "",
   });
   const [banner, setBanner] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
   const inputRef = useRef(null);
 
   const handleButtonClick = () => {
     inputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setBanner(URL.createObjectURL(file));
-    }
-  };
-
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith("image/")) {
+        setBanner(file); 
+        setBannerPreview(URL.createObjectURL(file));
+      }
+    };
 
     const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,26 +65,24 @@ const CreateCategory = () => {
 
     const response = await customFetch.post("/create-category", formData);
     message.success(response.data.message);
-    
-    
+    navigate("/categories"); 
    } catch (error) {
       message.error(error?.response?.data?.details);
       
    }
 
    setCategory({
-
     title: "",
     description: "",
 
    })
-
    setBanner(null)
-
-
-
-
+   setBannerPreview(null)
   }
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
 
 
@@ -95,7 +95,7 @@ const CreateCategory = () => {
      <main className="flex flex-col flex-1 m-4  lato text-slate-900 px-4 gap-8 ">
         <AdminHeader />
         <div className="flex items-center gap-x-3">
-        <Link to="/all-product" className='btn' title='back'><RollbackOutlined /></Link>
+        <button onClick={goBack} className='btn' title='back'><RollbackOutlined /></button>
         <span className="text-xl font-semibold capitalize">Create Category</span>
       </div>
 
@@ -147,10 +147,10 @@ const CreateCategory = () => {
           </>
         )}
 
-          {banner && (
+          {bannerPreview && (
             <div className=" w-full h-full relative flex items-center justify-center">
              <img
-              src={banner}
+              src={bannerPreview}
               alt="Banner Preview"
               className="mt-2 w-full h-full  rounded-md object-contain"
             />

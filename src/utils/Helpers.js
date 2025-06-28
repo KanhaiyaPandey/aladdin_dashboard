@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // const variant = {
 //     options:[],
@@ -47,3 +48,9 @@ export const generateCombinations = (arrays) => {
   export const generateVariants = () =>{
    
 }
+
+
+
+
+
+

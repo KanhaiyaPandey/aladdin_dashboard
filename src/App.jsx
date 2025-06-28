@@ -51,7 +51,7 @@ const router = createBrowserRouter([
           element: <Categories />,
         },
          {
-          path: "/create-category",
+          path: "/categories/create-category",
           element: <CreateCategory />,
         },
          {
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
           element: <Collections />,
         },
          {
-          path: "/create-collection",
+          path: "/collections/create-collection",
           element: <CreateCollection />,
         },
         {

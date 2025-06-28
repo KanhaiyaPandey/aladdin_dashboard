@@ -161,12 +161,12 @@ const handleEdit = () =>{
 
             <div key={index} className=" relative px-3 py-2 flex flex-col gap-2 rounded-lg bg-gray-100 w-full shadow-md text-sm">
                 <div className=" flex items-center w-full gap-3">
-                    <span>Name:</span>
+                    <span className="  text-gray-500">Name:</span>
                      <span>{attribute.name}</span>       
                 </div>
 
                  <div className=" flex items-center w-full gap-3">
-                    <span>Values:</span>
+                    <span className="  text-gray-500">Values:</span>
                     {attribute.values?.map((value, index) =>(
                         <span className=" px-3 py-1 min-w-10 rounded-lg bg-[#C6E7FF] flex items-center justify-center" key={index}>{value}</span>
                     ))}      
