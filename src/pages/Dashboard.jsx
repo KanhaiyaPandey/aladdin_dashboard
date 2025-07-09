@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 const Dashboard = () => {
 
   return (
-    <main>
+    <main className=" overflow-x-hidden">
       <div className="flex min-h-screen lato h-full justify-center">
         <div className=" w-2/12">
              <AdminSidebar />

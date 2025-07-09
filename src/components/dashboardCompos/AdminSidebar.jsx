@@ -15,7 +15,7 @@ import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 const menu = [
   {
-    path: "overview",
+    path: "",
     name: "Overview",
     icon: <HomeOutlined />,
     submenu: [],
@@ -91,7 +91,7 @@ const AdminSidebar = () => {
   return (
     <main className="lg:block hidden shadow-xl sticky top-0 translate-y-4 border translate-x-3 flex-col rounded-2xl p-4 w-full h-auto">
       <Link
-        to="/overview"
+        to="/"
         className="flex text-3xl font-bold border-b items-center justify-center pb-3"
       >
         ALADDIN
