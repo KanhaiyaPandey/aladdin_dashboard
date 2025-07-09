@@ -1,8 +1,9 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { customFetch } from "../utils/Helpers";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { customFetch, publicFetch } from "../utils/Helpers";
+import { Link, redirect, useNavigate, useParams } from "react-router-dom";
 import {  DeleteOutlined, InboxOutlined, RollbackOutlined } from "@ant-design/icons";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
 import { Input, message, Upload } from "antd";
@@ -11,8 +12,11 @@ import Dragger from "antd/es/upload/Dragger";
 
 
 
-const CreateCategory = () => {
+const CreateCategory = ({activePage}) => {  
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState({
     title: "",
     description: "",
@@ -20,6 +24,7 @@ const CreateCategory = () => {
   const [banner, setBanner] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
   const inputRef = useRef(null);
+  const [currentPath, setCurrentPath] = useState("");
 
   const handleButtonClick = () => {
     inputRef.current.click();
@@ -42,53 +47,66 @@ const CreateCategory = () => {
   };
 
   const handleSave = async () =>{
+    setLoading(true);
 
      const formData = new FormData();
 
-   if (category.title === "" || category.description === "") {
-     message.error("Title & Description required");
-     return
-  }
+      if (category.title === "" || category.description === "") {
+        message.error("Title & Description required");
+        setLoading(false);
+        return
+      }
+      if (banner) {
+        formData.append("banner", banner);
+      }else{
+        message.error("banner is required");
+        setLoading(false);
+        return;
+      }
+      formData.append("category", JSON.stringify(category));
+      try {
+        const response = await customFetch.post("/category/create-category", formData,);
+        message.success(response.data.message);
+        setLoading(false);
+        navigate("/categories"); 
+      } catch (error) {
+          message.error(error?.response?.data?.details);   
+      }
+    }
 
+      const goBack = () => {
+        navigate(-1);
+      };
 
-  if (banner) {
-    formData.append("banner", banner);
-  }else{
-    message.error("banner is required");
-    return;
-  }
+    useEffect(() =>{
+     if (id) {
+      getCategory()
+      setCategory((prev) => ({
+      ...prev,
+      parentCategoryId:id
+    })); 
+  }     
+    },[])
 
-  // Append category object as JSON string
-  formData.append("category", JSON.stringify(category));
+    const getCategory = async () =>{
+      try {
+         const res = await publicFetch.get(`/category/${id}`)
 
-   try {
+            setData(res.data.data);
+            if (activePage !== 'subcategory') {
+              setCategory({
+                title: data.title || "",
+                description: data.description || "",
+              });
+              setBanner(data.banner[0] || null);
+              setBannerPreview(data.banner[0] || null)
+            }
 
-    const response = await customFetch.post("/create-category", formData);
-    message.success(response.data.message);
-    navigate("/categories"); 
-   } catch (error) {
-      message.error(error?.response?.data?.details);
-      
-   }
-
-   setCategory({
-    title: "",
-    description: "",
-
-   })
-   setBanner(null)
-   setBannerPreview(null)
-  }
-
-  const goBack = () => {
-    navigate(-1);
-  };
-
-
-
-
-
-
+      } catch (error) {
+        toast("some thing went wrong try after some time")
+        navigate("/categories/all-categories")
+      }
+    }
 
   return (
 
@@ -96,7 +114,8 @@ const CreateCategory = () => {
         <AdminHeader />
         <div className="flex items-center gap-x-3">
         <button onClick={goBack} className='btn' title='back'><RollbackOutlined /></button>
-        <span className="text-xl font-semibold capitalize">Create Category</span>
+        <span className="text-xl font-semibold capitalize">{activePage === 'create catgeory' && `create category`}
+           {activePage === 'subcategory' && `create subcategory for ${data?.title}`} {activePage === 'update catgeory' && `update category`}</span>
       </div>
 
         <div className=" w-full rounded-xl bg-white p-5 shadow flex items-start gap-5">
@@ -123,7 +142,7 @@ const CreateCategory = () => {
               variant="filled"/>
           </div> 
 
-          <button onClick={handleSave} className=" btn btn-success">Save</button>
+          <button disabled={loading} onClick={handleSave} className=" btn btn-success">{loading ? <span className=" loading loading-dots loading-md"></span> : `Save`}</button>
 
         </div>
 

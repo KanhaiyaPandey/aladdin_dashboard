@@ -184,7 +184,7 @@ const handleShipping = async () => {
   return (
     <div className="w-full mx-auto px-10 py-4 flex items-center justify-between">
       <div className="flex items-center gap-x-3">
-        <Link to="/all-product" className='btn' title='back'><RollbackOutlined /></Link>
+        <Link to="/products" className='btn' title='back'><RollbackOutlined /></Link>
         <span className="text-xl font-semibold capitalize">{activePage}</span>
       </div>
       <div className="flex gap-3">

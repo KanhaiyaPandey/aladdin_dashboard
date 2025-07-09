@@ -45,8 +45,10 @@ export const generateCombinations = (arrays) => {
     , [[]]);
   };
 
-  export const generateVariants = () =>{
-   
+  export const getCategory = async () =>{
+    
+    
+
 }
 
 

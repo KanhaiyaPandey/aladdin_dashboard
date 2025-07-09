@@ -14,7 +14,8 @@ const CategorySelection = ({ productData, setProductData }) => {
       try {
         const response = await publicFetch.get("/category/all-categories");
         if (response?.data?.success) {
-          setCategories(response?.data?.data);
+            const flatCategories = flattenCategories(response.data.data);
+            setCategories(flatCategories);
         }
       } catch (error) {
         console.log(error);
@@ -54,6 +55,26 @@ const CategorySelection = ({ productData, setProductData }) => {
       productCategories: updatedCategories,
     }));
   };
+
+
+  const flattenCategories = (categories) => {
+  const flatList = [];
+
+  const extract = (categoryArray) => {
+    categoryArray.forEach(cat => {
+      const { subCategories, ...rest } = cat;
+      flatList.push(rest); // push the current category
+
+      if (Array.isArray(subCategories) && subCategories.length > 0) {
+        extract(subCategories); // recursively extract children
+      }
+    });
+  };
+
+  extract(categories);
+  return flatList;
+};
+
 
   return (
     <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">

@@ -61,7 +61,7 @@ const AllProductTable = ({products, handleDelete}) => {
         <td>{new Date(item.createdAt).toLocaleString()}</td>
         <th className=" flex items-center justify-start">
           <button className="btn btn-ghost btn-circle btn-md"><EyeOutlined /></button>
-          <Link to={`/update-product/${item.productId}`} className="btn btn-ghost btn-circle btn-md"><EditOutlined /></Link>
+          <Link to={`/products/update-product/${item.productId}`} className="btn btn-ghost btn-circle btn-md"><EditOutlined /></Link>
           <button onClick={() => handleDelete(item.productId, item.title)} className="btn btn-ghost btn-circle btn-md"><DeleteOutlined /></button>
         </th>
       </tr>

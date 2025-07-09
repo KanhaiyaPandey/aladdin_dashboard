@@ -34,15 +34,15 @@ const router = createBrowserRouter([
         element:<AdminSection /> ,
       },
         {
-          path: "all-product",
+          path: "products",
           element: <AllProducts/>,
       },     
        {
-          path: "add-product",
+          path: "products/add-product",
           element: <AddProduct/>,
        },
          {
-          path: "/update-product/:id",
+          path: "products/update-product/:id",
           element: <UpdateProduct />,
           loader:UpdateProductLoader,
         },
@@ -52,7 +52,15 @@ const router = createBrowserRouter([
         },
          {
           path: "/categories/create-category",
-          element: <CreateCategory />,
+          element: <CreateCategory activePage="create catgeory" />,
+        },
+        {
+          path: "/categories/create-subcategory/:id",
+          element: <CreateCategory activePage="subcategory" />,
+        },
+        {
+          path: "/categories/update-subcategory/:id",
+          element: <CreateCategory activePage="update catgeory" />,
         },
          {
           path: "/collections",

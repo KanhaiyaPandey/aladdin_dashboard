@@ -2,14 +2,16 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
-import { publicFetch } from "../utils/Helpers";
+import { customFetch, publicFetch } from "../utils/Helpers";
 import { AnimatePresence, motion } from "framer-motion";
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined, EditOutlined, PlusCircleOutlined, RightOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openIndex, setOpenIndex] = useState(categories[0]?.categoryId || null);
+    const [data, setData] = useState({categoryIds:["685e7921c33b294805137125"]});
 
   const navigate = useNavigate();
 
@@ -29,45 +31,68 @@ const Categories = () => {
      }
   }
 
+  
+    const deleteCategories = async (id) => {
+      try {
+        const categoryIdsToDelete = id
+          ? [id] // if single id passed
+          : data.categoryIds; // else use state data
+
+        const res = await customFetch.delete('/category/delete-categories', {
+          data: { categoryIds: categoryIdsToDelete },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (categoryIdsToDelete.length > 1) {
+          toast.success("Categories deleted");
+        } else {
+          toast.success("Category deleted");
+        }
+        await fetchCategories();
+      } catch (err) {
+        console.error("Error deleting categories:", err.response?.data || err.message);
+        toast.error("Something went wrong. Try again later.");
+      }
+    };
+
+
  
 
-  const toggleAccordion = (id) => {
-    setOpenIndex(openIndex === id ? null : id);
-  };
+    const [openMap, setOpenMap] = useState({});
 
+    const toggleAccordion = (id) => {
+      setOpenMap((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    };
 
-  const renderCategories = (categoriesList, level = 0) => {
-      return categoriesList.map((category, index) => {
-        const isOpen = openIndex === category.categoryId;
+    const renderCategories = (categoriesList, level = 0) => {
+      return categoriesList.map((category) => {
+        const isOpen = openMap[category.categoryId];
 
         return (
           <div
             key={category.categoryId}
-             onClick={() => toggleAccordion(category.categoryId)}
-            className={`border rounded-xl p-4 cursor-pointer shadow-sm ${level > 0 ? 'ml-4 border-l-2' : ''}`}
+            className={`border rounded-xl p-4 w-full cursor-pointer shadow-sm ${level > 0 ? ' ml-2' : ''}`}
           >
             {/* Accordion Header */}
-            <div
-             
-              className="flex justify-between items-center "
-            >
-              <div className=" flex items-center gap-4">
-              <img src={category?.banner[0]} className=" w-8 h-8 object-cover rounded-lg border" alt="category img" />
-              <div className="text-lg font-semibold">{category.title}</div>
-              </div>
-              <div className="text-sm text-gray-500 font-bold">
-                {category.categoryProducts?.length || 0} products
+            <div onClick={() => toggleAccordion(category.categoryId)} className="flex justify-between items-center">
+              <div className="flex items-center gap-4">
+                <img src={category?.banner?.[0]} className="w-8 h-8 object-cover rounded-lg border" alt="category img" />
+                <div className="text-lg font-semibold">{category.title}</div>
+                { category.subCategories?.length > 0 && <span className={`${isOpen ? ' rotate-90' : ''} transition-all ease-in-out duration-300`}><CaretRightOutlined /></span>}
               </div>
 
-                         {/* Action Buttons */}
-            <div className=" flex items-center gap-4">
-              <button className=""title="Edit"><EditOutlined /></button>
-              <button className=" " title="Add sub-category"><PlusCircleOutlined /></button>
-              <button className=" " title="Delete category"><DeleteOutlined /></button>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-4">
+                <Link to={`/categories/update-subcategory/${category.categoryId}`} title="Update"><EditOutlined /></Link>
+                <Link to={`/categories/create-subcategory/${category.categoryId}`} title="Add sub-category"><PlusCircleOutlined /></Link>
+                <button onClick={() => deleteCategories(category.categoryId)} title="Delete category"><DeleteOutlined /></button>
+              </div>
             </div>
-
-            </div>
-
 
             {/* Subcategory Accordion Content */}
             <AnimatePresence initial={false}>
@@ -79,8 +104,8 @@ const Categories = () => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden mt-3"
                 >
-                  <div className="ml-2">
-                    <h4 className="text-sm font-medium text-gray-600 mb-1">Subcategories:</h4>
+                  <div className=" flex w-full items-center">
+                     <span className="text-gray-400">↳</span>
                     {renderCategories(category.subCategories, level + 1)}
                   </div>
                 </motion.div>
@@ -90,6 +115,7 @@ const Categories = () => {
         );
       });
     };
+
 
 
 
@@ -117,7 +143,7 @@ return (
           </p>
           <div className="mt-8 flex items-center justify-center gap-x-6">
             <Link
-              to="/create-category"
+              to="/categories/create-category"
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Add Category

@@ -43,7 +43,7 @@ const UpdateProduct = () => {
     try {
      const response = await customFetch.put(`/product/update-product/${id}`, productData)
       toast.success(response.data.message);
-      navigate(`/update-product/${id}`);
+      navigate(`/products/update-product/${id}`);
     } catch (error) {
       toast.error(error.message || "Failed to update the product.");
     }

@@ -35,3 +35,8 @@ export const UpdateProductLoader = async ({params}) =>{
        const product = response.data.data;
        return({product});
 }
+
+
+// export const createCategoryLoader = async ({params}) =>{
+//     const response = await publicFetch.get(`/category`)
+// }
