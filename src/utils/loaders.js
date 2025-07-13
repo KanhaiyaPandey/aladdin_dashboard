@@ -18,12 +18,12 @@ import { loginUser } from "../assets/features/userSlice";
           return redirect("/login");
         }
       } else {
-        toast.error("You must be logged in to checkout");
+        toast.error("You must be logged to access this route");
         return redirect("/login");
       }
     } catch (error) {
       console.error("Auth validation error:", error);
-      toast.error("Session expired or network error");
+      toast.error("Session expired");
       return redirect("/login");
     }
 
