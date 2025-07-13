@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', 
+        target: 'https://aladdin-0kuf.onrender.com', 
         changeOrigin: true,
         secure: false, // Disable SSL verification for development if needed
         // rewrite: (path) => path.replace(/^\/api/, ''), // Optional: Remove `/api` prefix
