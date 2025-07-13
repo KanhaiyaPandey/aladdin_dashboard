@@ -104,8 +104,7 @@ const Categories = () => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden mt-3"
                 >
-                  <div className=" flex w-full items-center">
-                     <span className="text-gray-400">↳</span>
+                  <div className=" flex flex-col gap-2 w-full items-center">
                     {renderCategories(category.subCategories, level + 1)}
                   </div>
                 </motion.div>

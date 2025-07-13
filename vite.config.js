@@ -10,7 +10,7 @@ export default defineConfig({
         target: 'http://localhost:8080', 
         changeOrigin: true,
         secure: false, // Disable SSL verification for development if needed
-        rewrite: (path) => path.replace(/^\/api/, ''), // Optional: Remove `/api` prefix
+        // rewrite: (path) => path.replace(/^\/api/, ''), // Optional: Remove `/api` prefix
       },
     },
   },
