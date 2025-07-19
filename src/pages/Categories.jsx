@@ -88,7 +88,7 @@ const Categories = () => {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-4">
-                <Link to={`/categories/update-subcategory/${category.categoryId}`} title="Update"><EditOutlined /></Link>
+                <Link to={`/categories/update-category/${category.categoryId}`} title="Update"><EditOutlined /></Link>
                 <Link to={`/categories/create-subcategory/${category.categoryId}`} title="Add sub-category"><PlusCircleOutlined /></Link>
                 <button onClick={() => deleteCategories(category.categoryId)} title="Delete category"><DeleteOutlined /></button>
               </div>

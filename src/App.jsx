@@ -15,6 +15,7 @@ import Categories from './pages/Categories'
 import Collections from './pages/Collections'
 import CreateCategory from './pages/CreateCategory'
 import CreateCollection from './pages/CreateCollection'
+import UpdateCategory from './pages/UpdateCategory'
 
 
 const router = createBrowserRouter([
@@ -59,8 +60,8 @@ const router = createBrowserRouter([
           element: <CreateCategory activePage="subcategory" />,
         },
         {
-          path: "/categories/update-subcategory/:id",
-          element: <CreateCategory activePage="update catgeory" />,
+          path: "/categories/update-category/:id",
+          element: <UpdateCategory activePage="update catgeory" />,
         },
          {
           path: "/collections",

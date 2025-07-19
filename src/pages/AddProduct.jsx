@@ -53,7 +53,7 @@ const AddProduct = () => {
       });
   
       toast.success(response.data.message);
-      navigate("/all-product"); 
+      navigate("/products"); 
     } catch (error) {
       toast.error( error.response.data);
       // toast.error("Failed to save the product. Please try again.");
@@ -62,7 +62,7 @@ const AddProduct = () => {
   
 
   return (
-    <main className=" flex flex-col items-center justify-center">
+    <main className=" flex flex-col items-center justify-center mb-10">
     <NavigationHead handleSaveProduct={handleSaveProduct} activePage={"add product"}/>
     <div className=" mx-auto px-10 w-full lato grid grid-cols-2 gap-x-6 items-start">
       

@@ -1,11 +1,26 @@
-import React from "react";
-import { MdAdminPanelSettings } from "react-icons/md";
+
 import { IoSearch } from "react-icons/io5";
-import { FaMessage } from "react-icons/fa6";
-import { IoIosNotifications } from "react-icons/io";
-import { AppstoreOutlined, NotificationOutlined, WechatOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, LogoutOutlined, NotificationOutlined, WechatOutlined } from "@ant-design/icons";
+import { authFetch } from "../../utils/Helpers";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const AdminHeader = () => {
+
+  const navigate = useNavigate();
+
+  const handleLogout =  async () =>{
+      const res = await authFetch.post("/logout");
+      
+      if (res.data.success) {
+         message.success("Loged out successfully");
+         navigate("/login");
+      }else{
+          message.error("oops! Something went wrong");
+      }
+  }
+
+
   return (
     <>
       <header className="flex justify-between items-center w-full  ">
@@ -34,6 +49,10 @@ const AdminHeader = () => {
 
             <button>
                  <AppstoreOutlined style={{ fontSize: '20px' }} className=""/>
+            </button>
+
+            <button onClick={() => handleLogout()}>
+              <LogoutOutlined />
             </button>
        
       

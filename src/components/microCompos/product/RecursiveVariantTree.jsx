@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 const RecursiveVariantTree = ({ variants }) => {
-  // Grouping function for a given level
+  // Grouping function for a given level 
   const groupVariants = (variantList, level = 0) => {
     const grouped = {};
     for (const variant of variantList) {

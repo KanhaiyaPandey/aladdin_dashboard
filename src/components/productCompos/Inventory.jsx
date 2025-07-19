@@ -1,8 +1,54 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Input } from "antd";
+import { useEffect, useState } from "react";
+import { customFetch } from "../../utils/Helpers";
+import WarehoueModal from "../microCompos/product/WarehoueModal";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 const Inventory = ({productData, setProductData}) => {
+   
+  const [allWarehouse, setAllWarehouse] = useState([]);
+  const [warehouseData, setWarehouseData] = useState(productData?.warehouseData || []);
+  const [openModal, setOpenModal] = useState(false)
+
+  useEffect(() =>{
+   getWarehouses();
+  },[])
+
+  const getWarehouses = async () =>{
+    const response = await customFetch.get("/warehouses/get-all")
+    console.log(response.data.data);
+    setAllWarehouse(response?.data?.data)  
+  }
+
+    useEffect(() => {
+    setWarehouseData(productData?.warehouseData || []);
+  }, [productData?.warehouseData]);
+
+  const handleSaveWarehouses = (newWarehouses) => {
+    setWarehouseData(prev => [...prev, ...newWarehouses]);
+    setProductData(prev => ({
+      ...prev,
+      warehouseData: [...warehouseData, ...newWarehouses],
+    }));
+  };
+
+    const handleStockChange = (index, value) => {
+    const updatedWarehouses = [...warehouseData];
+    updatedWarehouses[index].stock = Number(value);
+
+    setWarehouseData(updatedWarehouses);
+
+    // Also update the productData
+    setProductData(prev => ({
+      ...prev,
+      warehouseData: updatedWarehouses,
+    }));
+  };
+
+
+
   return (
     <div className=" w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
       <h1 className=" text-xl font-semibold ">Inventory</h1>
@@ -37,41 +83,49 @@ const Inventory = ({productData, setProductData}) => {
         </span>
       </p>
 
+      
+       <div className=" w-full flex items-center justify-between mt-10">
+        <span className=" font-semibold">Warehouses</span>
+        <button onClick={() => setOpenModal(true)} className="  items-center gap-2 flex ">
+          <span><PlusCircleOutlined /></span>
+          <span>Add Warehouse</span>
+        </button>
+        <WarehoueModal
+         allWarehouse={allWarehouse}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          warehouseData={warehouseData}
+          setWarehouseData={handleSaveWarehouses} 
+         />
+       </div>
 
-<div className="overflow-x-auto">
-  <table className="table">
-    {/* head */}
-    <thead>
-      <tr>
-        <th></th>
-        <th>Warehouse</th>
-        <th>Stock</th>
-      </tr>
-    </thead>
-    <tbody>
-      {/* row 1 */}
-      <tr>
-        <th>1</th>
-        <td>Cy Ganderton</td>
-        <td> <Input className=" h-12 "  /></td>
 
-      </tr>
-      {/* row 2 */}
-      <tr>
-        <th>2</th>
-        <td>Hart Hagerty</td>
-        <td><Input className=" h-12 "  /></td>
 
-      </tr>
-      {/* row 3 */}
-      <tr>
-        <th>3</th>
-        <td>Brice Swyre</td>
-        <td><Input className=" h-12 "  /></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    { warehouseData.length > 0 &&  <div className="overflow-x-auto">
+      <table className="table">
+        {/* head */}
+        <thead>
+          <tr>
+            <th>SL No.</th>
+            <th>Warehouse</th>
+            <th>Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          {warehouseData.map((warehouse, index) =>(
+
+          <tr key={warehouse?.warehouseId}>
+            <th>{index+1}</th>
+            <td>{warehouse?.name}</td>
+            <td> <Input value={warehouse?.stock} className=" h-12 " onChange={(e) => handleStockChange(index, e.target.value)} /></td>
+          </tr>
+
+          ))}
+ 
+        </tbody>
+      </table>
+    </div>
+  }
 
 
     </div>

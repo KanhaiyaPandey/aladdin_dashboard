@@ -1,14 +1,13 @@
+/* eslint-disable no-unused-vars */
 
 import { useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Form, useNavigation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("kanhaiyapandey2232@gmail.com");
+    const [password, setPassword] = useState("8877592600@Kp");
     const [error, setError] = useState("");
     const navigation = useNavigation();
     const isSubmitting = navigation.state === 'submitting';
@@ -39,6 +38,7 @@ const Login = () => {
               name="email"
               className="w-full px-3 py-2  h-12"
               value={email}
+            
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -55,6 +55,7 @@ const Login = () => {
             name="password"
             className="w-full px-3 py-2 h-12"
             value={password}
+         
             onChange={(e) => setPassword(e.target.value)}
             iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
             required
