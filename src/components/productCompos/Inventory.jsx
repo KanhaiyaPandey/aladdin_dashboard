@@ -114,7 +114,7 @@ const Inventory = ({productData, setProductData}) => {
         <tbody>
           {warehouseData.map((warehouse, index) =>(
 
-          <tr key={warehouse?.warehouseId}>
+          <tr key={warehouse?.warehouseId || index}>
             <th>{index+1}</th>
             <td>{warehouse?.name}</td>
             <td> <Input value={warehouse?.stock} className=" h-12 " onChange={(e) => handleStockChange(index, e.target.value)} /></td>

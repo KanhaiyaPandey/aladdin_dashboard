@@ -1,5 +1,12 @@
+import { useState } from "react";
+import VariantMediasModal from "./VariantMediasModal";
+
 /* eslint-disable react/prop-types */
-const RecursiveVariantTree = ({ variants }) => {
+const RecursiveVariantTree = ({ variants, setProductData, productData }) => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+
   // Grouping function for a given level 
   const groupVariants = (variantList, level = 0) => {
     const grouped = {};
@@ -24,8 +31,12 @@ const RecursiveVariantTree = ({ variants }) => {
             <div className="flex items-center ml-4 justify-between rounded-xl gap-2 bg-gray-100 p-3">
                     <div className=" flex items-center gap-2">
                         <input type="checkbox" />
-                         <div className=" w-10 h-10 rounded-md bg-[#ffddaeb9]">
-                            <img src="" alt="" />
+                         <div className=" w-10 h-10 overflow-hidden rounded-md bg-[#ffddaeb9] cursor-pointer"
+                           onClick={() => {
+                            setSelectedVariant(group);
+                            setIsModalOpen(true);
+                          }}>
+                            <img src={group[0]?.variantMedias?.[0]?.url} className=" object-cover h-full w-full" alt="" />
                          </div>
                         <span>{key}</span>
                     </div>
@@ -37,8 +48,12 @@ const RecursiveVariantTree = ({ variants }) => {
                 <div className="flex items-center justify-between rounded-xl gap-2 bg-gray-100 p-3 ">
                     <div className=" flex items-center gap-2 z-10">
                         <input type="checkbox" />
-                         <div className=" w-10 h-10 rounded-md bg-[#ffddaeb9]">
-                            <img src="" alt="" />
+                         <div className=" w-10 h-10 overflow-hidden rounded-md bg-[#ffddaeb9]"
+                            onClick={() => {
+                            setSelectedVariant(group);
+                            setIsModalOpen(true);
+                          }}>
+                            <img src={group[0]?.variantMedias?.[0]?.url} className=" object-cover h-full w-full" alt="" />
                          </div>
                         <span>{key}</span>
                     </div>
@@ -55,7 +70,15 @@ const RecursiveVariantTree = ({ variants }) => {
     });
   };
 
-  return <div>{renderTree(variants)}</div>;
+  return (
+    <>
+     <div>{renderTree(variants)}</div>
+     <VariantMediasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}
+      selectedGroup={selectedVariant} productData={productData}
+      setProductData={setProductData}/>
+    </>
+ 
+);
 };
 
 export default RecursiveVariantTree;
