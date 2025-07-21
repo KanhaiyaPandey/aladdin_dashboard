@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 
-
+/.env
 
 # {
 #     "email":"kanhaiyapandey2232@gmail.com",
