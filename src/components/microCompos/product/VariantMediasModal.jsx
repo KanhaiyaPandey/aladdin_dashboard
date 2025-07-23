@@ -107,7 +107,7 @@ const isMediaChecked = (media) => {
           );
         })}
 
-        <div className="w-full hidden overflow-hidden h-full flex flex-col gap-2 items-center justify-center rounded border">
+        <div className="w-full hidden overflow-hidden h-full  flex-col gap-2 items-center justify-center rounded border">
           <CloudUploadOutlined />
           <span className="text-xs">Upload More</span>
         </div>

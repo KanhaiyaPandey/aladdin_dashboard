@@ -114,13 +114,13 @@ const handleOrder = async () => {
   } catch (error) {
     console.error("Order creation failed:", error.response?.data || error.message);
   }
-};
+}
 
 
   const handlePay = async () => {
     try {
       // Call your backend to create Razorpay order
-      const res = await fetch('http://localhost:8080/api/public/payments/create-order?amount=500&currency=INR', {
+      const res = await fetch('http://localhost:8080/api/public/payments/create-payment?amount=500&currency=INR', {
         method: 'POST',
       });
 
@@ -138,10 +138,68 @@ const handleOrder = async () => {
         name: "Aladdin Store",
         description: "Test Transaction",
         order_id: data.order.id,
-        handler: function (response) {
-          console.log(response);   
-           toast.success(response.message)
-        },
+        handler: async function (response) {
+        console.log("✅ Payment Success Response", response);
+
+        const paymentInfo = {
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature,
+          paymentMode: "RAZORPAY"
+        };
+
+        // Step 1: Update `sendData` with paymentInfo
+        setSendData((prev) => {
+          const updatedData = {
+            ...prev,
+              paymentInfo: {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              paymentMode: "RAZORPAY", 
+            },
+          };
+
+          // Step 2: Verify payment with backend
+          fetch("http://localhost:8080/api/public/payments/confirm-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentInfo),
+          })
+            .then((res) => res.json())
+            .then(async (data) => {
+              if (data.success) {
+                toast.success("✅ Payment Verified & Order Placed");
+
+                // Step 3: Create order with updated sendData
+                try {
+                  const orderRes = await userFetch.post(`/create-order`, updatedData);
+                  if (orderRes.data.success) {
+                    toast.success("🛒 Order created successfully");
+                  } else {
+                    toast.error("❌ Order creation failed");
+                  }
+                } catch (err) {
+                  toast.error("❌ Error creating order");
+                  console.error(err);
+                }
+              } else {
+                toast.error("❌ Payment verification failed");
+              }
+            })
+            .catch((err) => {
+              toast.error("Server error during payment verification");
+              console.error(err);
+            });
+
+          return updatedData; // Make sure state is updated
+        });
+      },
+
+
+
         prefill: {
           name: "John Doe",
           email: "john@example.com",
@@ -195,9 +253,12 @@ const handleShipping = async () => {
         <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>
           Save
         </button>
-        {/* <button className="btn btn-neutral" onClick={handlePay}>
+
+<button className="btn btn-neutral" onClick={handlePay}>
           Pay
         </button>
+
+        {/* 
 
                <button className="btn btn-neutral" onClick={handleOrder}>
           order
@@ -213,3 +274,5 @@ const handleShipping = async () => {
 };
 
 export default NavigationHead;
+
+// 526d2a6f49912f2c3feacf1cb2095a5f3699cdaf7150071c24355681befe1f7c2

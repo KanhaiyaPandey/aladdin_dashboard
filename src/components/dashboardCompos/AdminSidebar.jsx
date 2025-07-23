@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   AppstoreAddOutlined,
@@ -12,6 +12,7 @@ import MarginIcon from "@mui/icons-material/Margin";
 import LoopIcon from "@mui/icons-material/Loop";
 import WalletIcon from "@mui/icons-material/Wallet";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import GroupIcon from '@mui/icons-material/Group';
 
 const menu = [
   {
@@ -47,6 +48,14 @@ const menu = [
       },
     ],
   },
+
+  {
+    path: "customers",
+    name: "Customers",
+    icon: <GroupIcon fontSize="small"/>,
+    submenu:[]
+  },
+
   {
     path: "orders",
     name: "Orders",

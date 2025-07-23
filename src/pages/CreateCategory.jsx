@@ -71,6 +71,7 @@ const CreateCategory = ({activePage}) => {
         navigate("/categories"); 
       } catch (error) {
           message.error(error?.response?.data?.details);   
+          setLoading(false);
       }
     }
 

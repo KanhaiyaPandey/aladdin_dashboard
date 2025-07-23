@@ -50,7 +50,7 @@ const AllProductTable = ({products, handleDelete}) => {
         <td className=" flex items-center gap-1">
             {item?.productCategories?.length > 0 ? (
             <span>
-              {item.productCategories.map(category => category.title).join(', ')}
+              {item.productCategories[0].title}
             </span>
           ) : (
             <span>none</span>
