@@ -44,7 +44,7 @@ const NavigationHead = ({ handleSaveProduct, activePage }) => {
   "shippingCharges": "20",
   "extraCharges": "10",
   "discountAmount": "30",
-  "grandTotal": "599.98",
+  "grandTotal": "6000.00",
   "gatewayDiscount": 15.00
 }
 

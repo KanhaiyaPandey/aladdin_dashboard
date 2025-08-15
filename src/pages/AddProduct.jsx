@@ -20,6 +20,7 @@ const AddProduct = () => {
   const [activePage, setActivePage] = useState("add product");
   const [productData, setProductData] = useState({
     title: "",
+    status: "ACTIVE",
     description:"",
     costPrice:"",
     sellPrice:"",

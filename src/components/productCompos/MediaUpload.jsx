@@ -64,8 +64,8 @@ const MediaUpload = ({ productData, setProductData }) => {
           }
         );
 
-        console.log("response:", response.data);
-        updatedMedias.push(response.data[0]);
+        console.log("response:", response.data.data);
+        updatedMedias.push(response.data.data[0]);
       } catch (error) {
         console.error("Error uploading files:", error);
         updatedMedias.push({
