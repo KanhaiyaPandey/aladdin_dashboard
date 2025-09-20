@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 // const variant = {
 //     options:[],
@@ -18,22 +17,22 @@ import { useNavigate } from 'react-router-dom';
 
 
 export const customFetch = axios.create({
-    baseURL: `${import.meta.env.VITE_BASE_URL}/api/admin`,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api/aladdin/admin`,
     withCredentials: true, // Ensures cookies are sent
 });
 
 export const userFetch = axios.create({
-    baseURL: `${import.meta.env.VITE_BASE_URL}/api/user`,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api/aladdin/user`,
     withCredentials: true, // Ensures cookies are sent
 });
 
 export const publicFetch = axios.create({
-    baseURL: `${import.meta.env.VITE_BASE_URL}/api/public`,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api/aladdin/public`,
     withCredentials: true, // Ensures cookies are sent
 });
 
 export const authFetch = axios.create({
-    baseURL: `${import.meta.env.VITE_BASE_URL}/user`,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api/auth/user`,
     withCredentials: true, // Ensures cookies are sent
 });
 

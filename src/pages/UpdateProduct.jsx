@@ -9,7 +9,7 @@ import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
 import NavigationHead from "../components/productCompos/NavigationHead";
-import { customFetch } from "../utils/Helpers";
+import { customFetch, publicFetch } from "../utils/Helpers";
 import Attributes from "../components/productCompos/Attributes";
 import Variants from "../components/productCompos/Variants";
 
@@ -23,14 +23,10 @@ const UpdateProduct = () => {
   useEffect(() => {    
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/public/product/${id}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch product data");
-        }
-        const result = await response.json();      
-        setProductData(result.data);
+        const response = await publicFetch(
+          `/product/${id}`
+        );     
+        setProductData(response?.data?.data);
       } catch (err) {
         toast.error("Failed to load product data");
       }

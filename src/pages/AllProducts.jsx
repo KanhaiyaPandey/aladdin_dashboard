@@ -6,6 +6,7 @@ import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
 import AllProductTable from "../components/allProducts/AllProductTable";
 import { Link } from "react-router-dom";
+import { customFetch, publicFetch } from "../utils/Helpers";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -14,15 +15,10 @@ const AllProducts = () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/public/product/all-products`
+      const response = await publicFetch(
+        `/product/all-products`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const result = await response.json();
-      console.log("response123: ", result.data);
-      setProducts(result.data);
+      setProducts(response?.data.data || []);
     } catch (err) {
       toast.error("Failed to fetch products");
     } finally {
@@ -38,8 +34,8 @@ useEffect(() => {
     console.log("Trying to delete productId:", productId);
     showDeleteConfirmToast(async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/admin/product/delete-product/${productId}`,
+        const response = await customFetch(
+          `/product/delete-product/${productId}`,
           {
             method: "DELETE",
             credentials: "include", 
