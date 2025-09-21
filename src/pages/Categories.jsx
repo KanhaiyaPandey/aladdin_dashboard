@@ -6,12 +6,39 @@ import { customFetch, publicFetch } from "../utils/Helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined, EditOutlined, PlusCircleOutlined, RightOutlined } from "@ant-design/icons";
 import toast from "react-hot-toast";
+import { Modal, Pagination } from "antd";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openIndex, setOpenIndex] = useState(categories[0]?.categoryId || null);
-    const [data, setData] = useState({categoryIds:["685e7921c33b294805137125"]});
+  const [data, setData] = useState({categoryIds:["685e7921c33b294805137125"]});
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+
+  const [deleteModal, setDeleteModal] = useState({
+  open: false,
+  category: null,
+});
+
+const handleOpen = (category) => {
+  setDeleteModal({ open: true, category });
+};
+
+  const onShowSizeChange = (current, pageSize) => {
+  console.log(current, pageSize);
+};
+
+const handleClose = () => {
+  setDeleteModal({ open: false, category: null });
+};
+
+const handleDelete = () => {
+  if (deleteModal.category) {
+    deleteCategories(deleteModal.category.categoryId);
+  }
+};
 
   const navigate = useNavigate();
 
@@ -33,6 +60,7 @@ const Categories = () => {
 
   
     const deleteCategories = async (id) => {
+      setConfirmLoading(true);
       try {
         const categoryIdsToDelete = id
           ? [id] // if single id passed
@@ -44,11 +72,12 @@ const Categories = () => {
             'Content-Type': 'application/json',
           },
         });
-
+        setConfirmLoading(false);
+        handleClose();
         if (categoryIdsToDelete.length > 1) {
           toast.success("Categories deleted");
         } else {
-          toast.success("Category deleted");
+          toast.success(`Category ${deleteModal?.category?.title} deleted`);
         }
         await fetchCategories();
       } catch (err) {
@@ -69,6 +98,7 @@ const Categories = () => {
       }));
     };
 
+
     const renderCategories = (categoriesList, level = 0) => {
       return categoriesList.map((category) => {
         const isOpen = openMap[category.categoryId];
@@ -81,7 +111,8 @@ const Categories = () => {
             {/* Accordion Header */}
             <div onClick={() => toggleAccordion(category.categoryId)} className="flex justify-between items-center">
               <div className="flex items-center gap-4">
-                <img src={category?.banner?.[0]} className="w-8 h-8 object-cover rounded-lg border" alt="category img" />
+                <input type="checkbox" name="" className=" checkbox" id="" />
+                <img src={category?.banner} className="w-8 h-8 object-cover rounded-lg border" alt="category img" />
                 <div className="text-lg font-semibold">{category.title}</div>
                 { category.subCategories?.length > 0 && <span className={`${isOpen ? ' rotate-90' : ''} transition-all ease-in-out duration-300`}><CaretRightOutlined /></span>}
               </div>
@@ -90,7 +121,8 @@ const Categories = () => {
               <div className="flex items-center gap-4">
                 <Link to={`/categories/update-category/${category.categoryId}`} title="Update"><EditOutlined /></Link>
                 <Link to={`/categories/create-subcategory/${category.categoryId}`} title="Add sub-category"><PlusCircleOutlined /></Link>
-                <button onClick={() => deleteCategories(category.categoryId)} title="Delete category"><DeleteOutlined /></button>
+                <button onClick={() => handleOpen(category)} title="Delete category"><DeleteOutlined />
+                </button>
               </div>
             </div>
 
@@ -155,15 +187,37 @@ return (
       </div>
     ) : (
       // ✅ Render Categories List
-      <div className="w-full flex flex-col gap-3">
-        <div className="flex items-center w-full justify-end">
+      <div className="w-full min-h-[500px] flex flex-col gap-3">
+        <div className="flex items-center w-full justify-between gap-4">
+          <div className=" w-9/12 px-4 py-2 border flex items-center gap-3 rounded-lg">
+            <input type="checkbox" name="" className=" checkbox" id="" />
+          </div>
           <button onClick={() => navigate("/categories/create-category")} className="btn btn-neutral">
             Add More
           </button>
         </div>
         {renderCategories(categories)}
+         <Modal
+          title="Delete Category"
+          open={deleteModal.open}
+          onOk={handleDelete}
+          confirmLoading={confirmLoading}
+          onCancel={handleClose}
+        >
+          <p>Are you sure you want to delete {deleteModal.category?.title}?</p>
+        </Modal>
       </div>
     )}
+
+    <div className=" w-full flex items-center justify-end">
+        <Pagination
+        showSizeChanger
+        onShowSizeChange={onShowSizeChange}
+        defaultCurrent={3}
+        total={50}
+      />
+    </div>
+
   </main>
   <Outlet/>
   </>

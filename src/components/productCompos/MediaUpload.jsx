@@ -33,13 +33,12 @@ const MediaUpload = ({ productData, setProductData }) => {
   };
 
   const processFiles = (files) => {
-    // Add files to the state with a temporary preview and `uploading: true`
     const filesArray = Array.from(files).map((file, index) => ({
       file,
       uploading: true,
       sequence: medias.length + index + 1,
-      url: URL.createObjectURL(file), // Temporary preview
-      tempId: `${Date.now()}-${index}`, // Unique temp id for tracking
+      url: URL.createObjectURL(file),
+      tempId: `${Date.now()}-${index}`,
     }));
 
     setMedias((prev) => [...prev, ...filesArray]);
@@ -47,51 +46,58 @@ const MediaUpload = ({ productData, setProductData }) => {
   };
 
   const uploadFiles = async (filesArray) => {
-    for (const fileObject of filesArray) {
-      const formData = new FormData();
+    const formData = new FormData();
+    filesArray.forEach((fileObject) => {
       formData.append("media", fileObject.file);
-
-      try {
-        const response = await customFetch.post(
-          "/media/upload-media",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        const uploaded = response.data.data[0];
-        // Ensure uploaded object has a url property for preview
+    });
+    try {
+      const response = await customFetch.post("/media/upload-media", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const uploadedList = response.data.data;
+      // Ensure each uploaded object has a url property for preview
+      uploadedList.forEach((uploaded) => {
         if (!uploaded.url && uploaded.mediaUrl)
           uploaded.url = uploaded.mediaUrl;
-        // Replace the uploading file with the uploaded file in medias
-        setMedias((prev) =>
-          prev.map((m) =>
+      });
+      setMedias((prev) => {
+        // Replace uploading files with uploaded files
+        let newMedias = [...prev];
+        filesArray.forEach((fileObject, idx) => {
+          const uploaded = uploadedList[idx];
+          newMedias = newMedias.map((m) =>
             m.tempId === fileObject.tempId
               ? { ...uploaded, uploading: false }
               : m
-          )
-        );
-        setProductData((prevData) => ({
-          ...prevData,
-          productMedias: [
-            ...prevData.productMedias.filter(
-              (m) => m.tempId !== fileObject.tempId
-            ),
+          );
+        });
+        return newMedias;
+      });
+      setProductData((prevData) => {
+        let newProductMedias = [...prevData.productMedias];
+        filesArray.forEach((fileObject, idx) => {
+          const uploaded = uploadedList[idx];
+          newProductMedias = [
+            ...newProductMedias.filter((m) => m.tempId !== fileObject.tempId),
             { ...uploaded, uploading: false },
-          ],
-        }));
-      } catch (error) {
-        console.error("Error uploading files:", error);
-        setMedias((prev) =>
-          prev.map((m) =>
-            m.tempId === fileObject.tempId
-              ? { ...m, uploading: false, error: true }
-              : m
-          )
-        );
-      }
+          ];
+        });
+        return {
+          ...prevData,
+          productMedias: newProductMedias,
+        };
+      });
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      setMedias((prev) =>
+        prev.map((m) =>
+          filesArray.some((f) => f.tempId === m.tempId)
+            ? { ...m, uploading: false, error: true }
+            : m
+        )
+      );
     }
   };
 
