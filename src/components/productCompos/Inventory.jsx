@@ -5,22 +5,19 @@ import { useEffect, useState } from "react";
 import { customFetch } from "../../utils/Helpers";
 import WarehoueModal from "../microCompos/product/WarehoueModal";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { useLoaderData } from "react-router-dom";
 
 const Inventory = ({productData, setProductData}) => {
    
   const [allWarehouse, setAllWarehouse] = useState([]);
   const [warehouseData, setWarehouseData] = useState(productData?.warehouseData || []);
   const [openModal, setOpenModal] = useState(false)
+  const {warehouses} = useLoaderData()
 
   useEffect(() =>{
-   getWarehouses();
-  },[])
+   setAllWarehouse(warehouses);
+  },[warehouses, productData])
 
-  const getWarehouses = async () =>{
-    const response = await customFetch.get("/warehouses/get-all")
-    console.log(response.data.data);
-    setAllWarehouse(response?.data?.data)  
-  }
 
     useEffect(() => {
     setWarehouseData(productData?.warehouseData || []);

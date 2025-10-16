@@ -5,29 +5,24 @@ import toast from "react-hot-toast";
 import { showDeleteConfirmToast } from "../utils/showDeleteConfirmToast";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
 import AllProductTable from "../components/allProducts/AllProductTable";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData, useNavigation, useRevalidator } from "react-router-dom";
 import { customFetch, publicFetch } from "../utils/Helpers";
 
 const AllProducts = () => {
-  const [products, setProducts] = useState([]);
+  
   const [loading, setLoading] = useState(true);
+  const {products} = useLoaderData();
+  const revalidator = useRevalidator(); 
+   const navigation = useNavigation();
+   useEffect(() => {
+     if (navigation.state === "loading") {
+       setLoading(true);
+     } else {
+       setLoading(false);
+     }
+   }, [navigation.state]);
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await publicFetch(
-        `/product/all-products`
-      );
-      setProducts(response?.data.data || []);
-    } catch (err) {
-      toast.error("Failed to fetch products");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchData();
-}, []);
 
 
   const handleDelete = (productId, title) => {
@@ -41,13 +36,7 @@ useEffect(() => {
             credentials: "include", 
           }
         );
-
-        if (!response.ok) {
-          throw new Error("Failed to delete product");
-        }
-        setProducts((prevProducts) =>
-          prevProducts.filter((p) => p.productId !== productId)
-        );
+        revalidator.revalidate();
         toast.success(`Product ${title} deleted successfully!`);
       } catch (error) {
         console.error("Delete error:", error.message);

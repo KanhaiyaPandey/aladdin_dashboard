@@ -16,8 +16,6 @@ import Attributes from "../components/productCompos/Attributes";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-
-  const [activePage, setActivePage] = useState("add product");
   const [productData, setProductData] = useState({
     title: "",
     status: "ACTIVE",
@@ -45,14 +43,8 @@ const AddProduct = () => {
   const handleSaveProduct = async () => {
     try {
    console.log(document.cookie);
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(productData));
-      const response = await customFetch.post('/create-product', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
+
+      const response = await customFetch.post('/product/create-product', productData);  
       toast.success(response.data.message);
       navigate("/products"); 
     } catch (error) {

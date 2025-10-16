@@ -1,5 +1,7 @@
 import  { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { FaWarehouse } from "react-icons/fa";
+
 import {
   AppstoreAddOutlined,
   AppstoreOutlined,
@@ -62,6 +64,15 @@ const menu = [
     icon: <MarginIcon fontSize="small" />,
     submenu: [],
   },
+
+  {
+    path: "warehouses",
+    name: "Warehouses",
+    icon: < FaWarehouse fontSize="small" />,
+    submenu: [],
+
+  },
+
   {
     path: "return-orders",
     name: "Return Management",

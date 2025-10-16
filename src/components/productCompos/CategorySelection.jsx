@@ -2,20 +2,20 @@
 import { useEffect, useState } from "react";
 import { Select } from "antd";
 import { publicFetch } from "../../utils/Helpers";
+import { useLoaderData } from "react-router-dom";
 
 const CategorySelection = ({ productData, setProductData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [visibleOptions, setVisibleOptions] = useState([]);
+  const {loaderCategories} = useLoaderData();
+
+  
 
   // Fetch full category tree
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await publicFetch.get("/category/all-categories");
-        if (response?.data?.success) {
-          const tree = response.data.data;
-          setAllCategories(tree);
+
+          setAllCategories(loaderCategories);
 
           const initialSelected = productData?.productCategories || [];
 
@@ -26,12 +26,13 @@ const CategorySelection = ({ productData, setProductData }) => {
               value: cat.categoryId,
               label: cat.title,
               title: cat.title,
+              slug: cat.slug,
             }));
             setSelectedItems(formatted);
 
             // Determine the deepest selected category
             const lastSelectedId = initialSelected[initialSelected.length - 1].categoryId;
-            const lastSelectedNode = findCategoryNodeById(tree, lastSelectedId);
+            const lastSelectedNode = findCategoryNodeById(loaderCategories, lastSelectedId);
 
             if (lastSelectedNode?.subCategories?.length > 0) {
               setVisibleOptions(lastSelectedNode.subCategories);
@@ -41,17 +42,11 @@ const CategorySelection = ({ productData, setProductData }) => {
             }
           } else {
             // Nothing selected, show top-level parent categories
-            const parentCategories = tree.filter(cat => !cat.parentCategoryId);
+            const parentCategories = loaderCategories.filter(cat => !cat.parentCategoryId);
             setVisibleOptions(parentCategories);
           }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
-    fetchData();
-  }, []);
+  }, [loaderCategories, productData]);
 
   // Handle selection change
   const handleCategoryChange = (values) => {
@@ -61,7 +56,7 @@ const CategorySelection = ({ productData, setProductData }) => {
       const matched = findCategoryNodeById(allCategories, cat.key || cat.value);
       return {
         categoryId: matched?.categoryId || cat.key || cat.value,
-        title: matched?.title || cat.title || cat.label,
+        slug: matched?.slug || cat.slug || cat.slug,
       };
     });
 
@@ -112,6 +107,7 @@ const CategorySelection = ({ productData, setProductData }) => {
             value: cat.categoryId,
             key: cat.categoryId,
             title: cat.title,
+            slug: cat.slug,
           }))}
         />
       </div>

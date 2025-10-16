@@ -19,6 +19,7 @@ const WarehoueModal = ({allWarehouse,openModal,setOpenModal,warehouseData,setWar
     const selectedWarehouses = allWarehouse
       .filter(wh => selectedIds.includes(wh.warehouseId))
       .map(wh => ({
+        warehouseId: wh.warehouseId,
         name: wh.name,
         address: wh.address,
         pincode: wh.pincode,
