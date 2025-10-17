@@ -22,8 +22,10 @@ const Attributes = ({productData, setProductData}) => {
     options: combo,
     costPrice: "",
     compareAtPrice: "",
+    sellPrice: "",
+    variantSku:createSku(combo),
     variantMedias: [],
-    variantWarehouseData: [],
+    variantWarehouseData: productData.warehouseData || [],
   }));
 
   setProductData((prev) => ({
@@ -31,7 +33,6 @@ const Attributes = ({productData, setProductData}) => {
     attributes: updatedAttrNames,
     variants: updatedVariants,
   }));
-
 
     if (
     productData.attributes?.length &&
@@ -62,6 +63,7 @@ const Attributes = ({productData, setProductData}) => {
 
 
 
+
   const handleChange = (values) => {
     setAttributesValues(values);
   };
@@ -82,8 +84,10 @@ const Attributes = ({productData, setProductData}) => {
     options: combo,
     costPrice: "",
     compareAtPrice: "",
+    sellPrice: "",
+    variantSku:createSku(combo),
     variantMedias: [],
-    variantWarehouseData: []
+    variantWarehouseData: productData.warehouseData || [],
   }));
 
     setProductData((prev) => ({
@@ -110,6 +114,7 @@ const handleDelete = (indexToDelete) => {
     options: combo,
     costPrice: "",
     compareAtPrice: "",
+    variantSku:"",
     variantMedias: [],
     variantWarehouseData: [],
   }));
@@ -123,6 +128,16 @@ const handleDelete = (indexToDelete) => {
 
 const handleEdit = () =>{
 
+}
+
+const createSku = (combo) => {
+  // Use productData.title and join with combo options
+  const titlePart = productData.title
+    ? productData.title.replace(/\s+/g, "-").toUpperCase()
+    : "PRODUCT";
+  const optionsPart = combo.map(opt => opt.replace(/\s+/g, "-").toUpperCase()).join("-");
+  
+  return `${titlePart}-${optionsPart}`;
 }
 
 

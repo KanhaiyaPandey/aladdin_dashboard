@@ -12,98 +12,129 @@ import Variants from "../components/productCompos/Variants";
 import { useNavigate } from "react-router-dom";
 import Attributes from "../components/productCompos/Attributes";
 
-
-
 const AddProduct = () => {
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
     title: "",
     status: "ACTIVE",
-    description:"",
-    costPrice:"",
-    sellPrice:"",
-    compareAtPrice:"",
-    sku:"",
-    barcode:"",
-    allowBackorder:true,
-    stockStatus:"IN_STOCK",
-    attributes:[],
-    productCategories:[],
-    productMedias:[],
-    variants:[],
-    warehouseData:[],
+    description: "",
+    costPrice: "",
+    sellPrice: "",
+    compareAtPrice: "",
+    sku: "",
+    barcode: "",
+    allowBackorder: true,
+    stockStatus: "IN_STOCK",
+    attributes: [],
+    productCategories: [],
+    productMedias: [],
+    variants: [],
+    warehouseData: [],
+  });
 
-  })
-
-  useEffect(() =>{
-   console.log("product data",productData);
-   
-  }, [productData])
+  useEffect(() => {
+    console.log("product data", productData);
+  }, [productData]);
 
   const handleSaveProduct = async () => {
     try {
-   console.log(document.cookie);
+      console.log(document.cookie);
 
-      const response = await customFetch.post('/product/create-product', productData);  
+      const response = await customFetch.post(
+        "/product/create-product",
+        productData
+      );
       toast.success(response.data.message);
-      navigate("/products"); 
+      navigate("/products");
     } catch (error) {
-      toast.error( error.response.data);
+      toast.error(error.response.data);
       // toast.error("Failed to save the product. Please try again.");
     }
   };
-  
+
+  const generateSku = (name) => {
+    if (!name) return "";
+    return name.trim().toUpperCase().replace(/\s+/g, "-");
+  };
 
   return (
     <main className=" flex flex-col items-center justify-center mb-10">
-    <NavigationHead handleSaveProduct={handleSaveProduct} activePage={"add product"}/>
-    <div className=" mx-auto px-10 w-full lato grid grid-cols-2 gap-x-6 items-start">
-      
-      <div className=" w-full grid grid-cols-1 gap-y-6">
-        <div className=" w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
-          <h1 className=" text-xl">General Information</h1>
-          <div className="w-full">
-            <p className="text-gray-500">Product Name</p>
-            <Input placeholder="" 
-              onChange={(e) => setProductData({
-                ...productData,
-                title: e.target.value
-              })} 
-              value={productData.title}
-              variant="filled" className=" mt-2 h-12" />
+      <NavigationHead
+        handleSaveProduct={handleSaveProduct}
+        activePage={"add product"}
+      />
+      <div className=" mx-auto px-10 w-full lato grid grid-cols-2 gap-x-6 items-start">
+        <div className=" w-full grid grid-cols-1 gap-y-6">
+          <div className=" w-full flex flex-col gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
+            <h1 className=" text-xl">General Information</h1>
+            <div className="w-full">
+              <p className="text-gray-500">Product Name</p>
+              <Input
+                placeholder=""
+                onChange={(e) =>
+                  setProductData((prev) => {
+                    const title = e.target.value;
+                    return {
+                      ...prev,
+                      title,
+                      sku: generateSku(title),
+                    };
+                  })
+                }
+                value={productData.title}
+                variant="filled"
+                className=" mt-2 h-12"
+              />
+            </div>
+            <div className="w-full">
+              <p className="text-gray-500">Description</p>
+              <TextArea
+                placeholder=""
+                className=" p-2 mt-2"
+                variant="filled"
+                onChange={(e) =>
+                  setProductData({
+                    ...productData,
+                    description: e.target.value,
+                  })
+                }
+                value={productData.description}
+                autoSize={{ minRows: 3, maxRows: 5 }}
+              />
+            </div>
           </div>
-          <div className="w-full">
-            <p className="text-gray-500">Description</p>
-            <TextArea
-              placeholder=""
-              className=" p-2 mt-2"
-              variant="filled"
-              onChange={(e) => setProductData({
-                ...productData,
-                description : e.target.value
-              })} 
-              value={productData.description}
-              autoSize={{ minRows: 3, maxRows: 5 }}
-            />
-          </div>
+
+          <Pricing productData={productData} setProductData={setProductData} />
+
+          <Inventory
+            productData={productData}
+            setProductData={setProductData}
+          />
         </div>
 
-        <Pricing productData={productData} setProductData={setProductData} />
+        {/* add product right side */}
 
-        <Inventory productData={productData} setProductData={setProductData} />
+        <div className=" w-full flex flex-col gap-y-6">
+          <MediaUpload
+            productData={productData}
+            setProductData={setProductData}
+          />
+          <Attributes
+            productData={productData}
+            setProductData={setProductData}
+          />
+          {productData.variants.length > 0 && (
+            <Variants
+              productData={productData}
+              setProductData={setProductData}
+            />
+          )}
+          <CategorySelection
+            productData={productData}
+            setProductData={setProductData}
+          />
+        </div>
       </div>
-
-      {/* add product right side */}
-
-      <div className=" w-full flex flex-col gap-y-6">
-        <MediaUpload productData={productData} setProductData={setProductData}/>
-        <Attributes productData={productData} setProductData={setProductData}/>
-       {productData.variants.length > 0 && <Variants productData={productData} setProductData={setProductData}/>}
-        <CategorySelection productData={productData} setProductData={setProductData}/>
-      </div>
-
-
-    </div>
     </main>
   );
 };
