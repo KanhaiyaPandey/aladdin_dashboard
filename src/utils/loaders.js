@@ -32,8 +32,10 @@ import { loginUser } from "../assets/features/userSlice";
 
 export const UpdateProductLoader = async ({params}) =>{
       const response = await publicFetch.get(`/product/${params.id}`);
-       const product = response.data.data;
-       return({product});
+      const catResponse = await publicFetch.get(`/category/all-categories`)
+      const categories = catResponse.data.data;
+      const product = response.data.data;
+       return({product, categories});
 }
 
 export const warehouseLoader = async () =>{

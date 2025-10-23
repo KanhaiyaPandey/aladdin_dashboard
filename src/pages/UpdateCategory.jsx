@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { customFetch, publicFetch } from "../utils/Helpers";
-import { Link, redirect, useNavigate, useParams } from "react-router-dom";
-import {  DeleteOutlined, InboxOutlined, RollbackOutlined } from "@ant-design/icons";
+import { useRef, useState } from "react";
+import { customFetch } from "../utils/Helpers";
+import { useNavigate, useParams } from "react-router-dom";
+import {  DeleteOutlined } from "@ant-design/icons";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
-import { Input, message, Upload } from "antd";
+import { Input, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import Dragger from "antd/es/upload/Dragger";
 import BackBtn from "../components/BackBtn";
 
 
@@ -15,7 +13,6 @@ import BackBtn from "../components/BackBtn";
 const UpdateCategory = ({activePage}) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState({
     title: "",
@@ -72,27 +69,6 @@ const UpdateCategory = ({activePage}) => {
       } catch (error) {
           message.error(error?.response?.data?.details); 
           setLoading(false);
-      }
-    }
-
-
-
-    useEffect(() =>{
-      getCategory()  
-    },[])
-
-    const getCategory = async () =>{
-      try {
-         const res = await publicFetch.get(`/category/${id}`)
-            setData(res.data.data);
-              setCategory({
-                title: res.data.data.title || "",
-                description: res.data.data.description || "",
-              });
-              setBanner(res.data.data.banner[0] || null);
-              setBannerPreview(res.data.data.banner[0] || null)
-      } catch (error) {
-        toast("some thing went wrong try after some time")
       }
     }
 

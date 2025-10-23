@@ -1,52 +1,55 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Select } from "antd";
-import { publicFetch } from "../../utils/Helpers";
 import { useLoaderData } from "react-router-dom";
 
 const CategorySelection = ({ productData, setProductData }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [visibleOptions, setVisibleOptions] = useState([]);
-  const {loaderCategories} = useLoaderData();
 
-  
+  // guard loader data so `categories` is always an array
+  const loaderData = useLoaderData() || {};
+  const categories = Array.isArray(loaderData.categories)
+    ? loaderData.categories
+    : [];
 
   // Fetch full category tree
   useEffect(() => {
+    setAllCategories(categories || productData.categories || []);
 
-          setAllCategories(loaderCategories);
+    const initialSelected = productData?.productCategories || [];
 
-          const initialSelected = productData?.productCategories || [];
+    if (initialSelected.length > 0) {
+      // Build selectedItems array
+      const formatted = initialSelected.map((cat) => ({
+        key: cat.categoryId,
+        value: cat.categoryId,
+        label: cat.title,
+        title: cat.title,
+        slug: cat.slug,
+      }));
+      setSelectedItems(formatted);
 
-          if (initialSelected.length > 0) {
-            // Build selectedItems array
-            const formatted = initialSelected.map((cat) => ({
-              key: cat.categoryId,
-              value: cat.categoryId,
-              label: cat.title,
-              title: cat.title,
-              slug: cat.slug,
-            }));
-            setSelectedItems(formatted);
+      // Determine the deepest selected category
+      const lastSelectedId =
+        initialSelected[initialSelected.length - 1].categoryId;
+      const lastSelectedNode = findCategoryNodeById(categories, lastSelectedId);
 
-            // Determine the deepest selected category
-            const lastSelectedId = initialSelected[initialSelected.length - 1].categoryId;
-            const lastSelectedNode = findCategoryNodeById(loaderCategories, lastSelectedId);
-
-            if (lastSelectedNode?.subCategories?.length > 0) {
-              setVisibleOptions(lastSelectedNode.subCategories);
-            } else {
-              // No children, don't update visible options
-              setVisibleOptions([]);
-            }
-          } else {
-            // Nothing selected, show top-level parent categories
-            const parentCategories = loaderCategories.filter(cat => !cat.parentCategoryId);
-            setVisibleOptions(parentCategories);
-          }
-
-  }, [loaderCategories, productData]);
+      if (lastSelectedNode?.subCategories?.length > 0) {
+        setVisibleOptions(lastSelectedNode.subCategories);
+      } else {
+        // No children, don't update visible options
+        setVisibleOptions([]);
+      }
+    } else {
+      // Nothing selected, show top-level parent categories
+      const parentCategories = (categories || []).filter(
+        (cat) => !cat.parentCategoryId
+      );
+      setVisibleOptions(parentCategories);
+    }
+  }, [categories, productData]);
 
   // Handle selection change
   const handleCategoryChange = (values) => {
@@ -77,8 +80,10 @@ const CategorySelection = ({ productData, setProductData }) => {
   };
 
   // Helper: Recursively search for a category by ID
-  const findCategoryNodeById = (categories, id) => {
-    for (const cat of categories) {
+  const findCategoryNodeById = (categoriesList = [], id) => {
+    if (!Array.isArray(categoriesList) || !id) return null;
+
+    for (const cat of categoriesList) {
       if (cat.categoryId === id) return cat;
       if (cat.subCategories?.length) {
         const found = findCategoryNodeById(cat.subCategories, id);
