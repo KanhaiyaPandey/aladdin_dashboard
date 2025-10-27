@@ -12,13 +12,13 @@ const WarehoueModal = ({
 }) => {
   const [selectedIds, setSelectedIds] = useState([]);
 
-  useEffect(() => {
-    // initialize selected checkboxes when modal opens or warehouseData changes (update page)
-    const initIds = Array.isArray(warehouseData)
-      ? warehouseData.map((w) => w.warehouseId)
-      : [];
-    setSelectedIds(initIds);
-  }, [openModal, warehouseData]);
+  // useEffect(() => {
+  //   // initialize selected checkboxes when modal opens or warehouseData changes (update page)
+  //   const initIds = Array.isArray(warehouseData)
+  //     ? warehouseData.map((w) => w.warehouseId)
+  //     : [];
+  //   setSelectedIds(initIds);
+  // }, [openModal, warehouseData]);
 
   const handleCheckboxChange = (warehouseId) => {
     setSelectedIds((prev) =>

@@ -14,14 +14,22 @@ const CategorySelection = ({ productData, setProductData }) => {
     ? loaderData.categories
     : [];
 
-  // Fetch full category tree
+  // update only when fetched categories or product's productCategories change
   useEffect(() => {
-    setAllCategories(categories || productData.categories || []);
+    const sourceCategories =
+      Array.isArray(categories) && categories.length > 0
+        ? categories
+        : Array.isArray(productData?.categories)
+        ? productData.categories
+        : [];
 
-    const initialSelected = productData?.productCategories || [];
+    setAllCategories(sourceCategories);
+
+    const initialSelected = Array.isArray(productData?.productCategories)
+      ? productData.productCategories
+      : [];
 
     if (initialSelected.length > 0) {
-      // Build selectedItems array
       const formatted = initialSelected.map((cat) => ({
         key: cat.categoryId,
         value: cat.categoryId,
@@ -29,27 +37,43 @@ const CategorySelection = ({ productData, setProductData }) => {
         title: cat.title,
         slug: cat.slug,
       }));
-      setSelectedItems(formatted);
 
-      // Determine the deepest selected category
+      // avoid unnecessary state updates (prevents infinite render loop)
+      if (JSON.stringify(formatted) !== JSON.stringify(selectedItems)) {
+        setSelectedItems(formatted);
+      }
+
       const lastSelectedId =
         initialSelected[initialSelected.length - 1].categoryId;
-      const lastSelectedNode = findCategoryNodeById(categories, lastSelectedId);
+      const lastSelectedNode = findCategoryNodeById(
+        sourceCategories,
+        lastSelectedId
+      );
 
-      if (lastSelectedNode?.subCategories?.length > 0) {
-        setVisibleOptions(lastSelectedNode.subCategories);
-      } else {
-        // No children, don't update visible options
-        setVisibleOptions([]);
+      const newVisible =
+        lastSelectedNode?.subCategories?.length > 0
+          ? lastSelectedNode.subCategories
+          : [];
+
+      if (JSON.stringify(newVisible) !== JSON.stringify(visibleOptions)) {
+        setVisibleOptions(newVisible);
       }
     } else {
-      // Nothing selected, show top-level parent categories
-      const parentCategories = (categories || []).filter(
+      const parentCategories = (sourceCategories || []).filter(
         (cat) => !cat.parentCategoryId
       );
-      setVisibleOptions(parentCategories);
+
+      if (JSON.stringify(parentCategories) !== JSON.stringify(visibleOptions)) {
+        setVisibleOptions(parentCategories);
+      }
+
+      if (selectedItems.length !== 0) {
+        setSelectedItems([]);
+      }
     }
-  }, [categories, productData]);
+    // only watch categories and productData.productCategories to avoid update depth
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories, productData?.productCategories]);
 
   // Handle selection change
   const handleCategoryChange = (values) => {
@@ -68,9 +92,11 @@ const CategorySelection = ({ productData, setProductData }) => {
       productCategories: updatedCategories,
     }));
 
-    // Show children of last selected
     const last = values[values.length - 1];
-    const lastNode = findCategoryNodeById(allCategories, last.value);
+    const lastNode = findCategoryNodeById(
+      allCategories,
+      last?.value || last?.key
+    );
 
     if (lastNode?.subCategories?.length > 0) {
       setVisibleOptions(lastNode.subCategories);
@@ -93,6 +119,39 @@ const CategorySelection = ({ productData, setProductData }) => {
     return null;
   };
 
+  // Build options
+  const selectedIds = (productData?.productCategories || []).map(
+    (c) => c.categoryId
+  );
+  const selectedOptions = (productData?.productCategories || []).map((c) => {
+    const node = findCategoryNodeById(allCategories, c.categoryId);
+    return {
+      label: node?.title || c.title || c.slug || String(c.categoryId),
+      value: c.categoryId,
+      key: c.categoryId,
+      title: node?.title || c.title,
+      slug: node?.slug || c.slug,
+    };
+  });
+
+  const remainingTopLevel = (allCategories || [])
+    .filter((cat) => !selectedIds.includes(cat.categoryId))
+    .filter((cat) => !cat.parentCategoryId)
+    .map((cat) => ({
+      label: cat.title,
+      value: cat.categoryId,
+      key: cat.categoryId,
+      title: cat.title,
+      slug: cat.slug,
+    }));
+
+  const optionsSource =
+    selectedOptions.length > 0
+      ? [...selectedOptions, ...remainingTopLevel]
+      : visibleOptions && visibleOptions.length > 0
+      ? visibleOptions
+      : remainingTopLevel;
+
   return (
     <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
       <h1 className="text-xl font-semibold">Category</h1>
@@ -107,13 +166,7 @@ const CategorySelection = ({ productData, setProductData }) => {
           value={selectedItems}
           labelInValue
           onChange={handleCategoryChange}
-          options={visibleOptions.map((cat) => ({
-            label: cat.title,
-            value: cat.categoryId,
-            key: cat.categoryId,
-            title: cat.title,
-            slug: cat.slug,
-          }))}
+          options={optionsSource}
         />
       </div>
     </div>

@@ -32,9 +32,9 @@ const AddProduct = () => {
     warehouseData: [],
   });
 
-  useEffect(() => {
-    console.log("product data", productData);
-  }, [productData]);
+  // useEffect(() => {
+  //   console.log("product data", productData);
+  // }, [productData]);
 
   const handleSaveProduct = async () => {
     try {
