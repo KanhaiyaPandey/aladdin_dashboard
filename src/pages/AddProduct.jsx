@@ -4,13 +4,15 @@ import Pricing from "../components/productCompos/Pricing";
 import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
 import { useNavigate } from "react-router-dom";
 import Attributes from "../components/productCompos/Attributes";
+import OtherDetails from "../components/productCompos/OtherDetails";
+import Dimensions from "../components/productCompos/Dimensions";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -110,6 +112,11 @@ const AddProduct = () => {
             productData={productData}
             setProductData={setProductData}
           />
+
+          <Dimensions productData = {productData}
+          setProductData = {setProductData} />
+
+
         </div>
 
         {/* add product right side */}
@@ -133,6 +140,8 @@ const AddProduct = () => {
             productData={productData}
             setProductData={setProductData}
           />
+          <OtherDetails productData={productData}
+          setProductData={setProductData}/>
         </div>
       </div>
     </main>

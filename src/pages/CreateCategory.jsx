@@ -25,8 +25,7 @@ const CreateCategory = ({ activePage }) => {
     description: "",
     banner: "",
   });
-  const inputRef = useRef(null);
-  const [currentPath, setCurrentPath] = useState("");
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;

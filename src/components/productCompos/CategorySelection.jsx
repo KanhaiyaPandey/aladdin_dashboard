@@ -73,7 +73,7 @@ const CategorySelection = ({ productData, setProductData }) => {
     }
     // only watch categories and productData.productCategories to avoid update depth
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories, productData?.productCategories]);
+  }, [productData]);
 
   // Handle selection change
   const handleCategoryChange = (values) => {

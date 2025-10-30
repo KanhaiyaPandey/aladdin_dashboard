@@ -12,6 +12,7 @@ import NavigationHead from "../components/productCompos/NavigationHead";
 import { customFetch, publicFetch } from "../utils/Helpers";
 import Attributes from "../components/productCompos/Attributes";
 import Variants from "../components/productCompos/Variants";
+import OtherDetails from "../components/productCompos/OtherDetails";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -102,6 +103,7 @@ const UpdateProduct = () => {
             productData={productData}
             setProductData={setProductData}
           />
+          <OtherDetails productData={productData} setProductData={setProductData}/>
         </div>
       </div>
     </main>
