@@ -25,7 +25,6 @@ const CreateCategory = ({ activePage }) => {
     description: "",
     banner: "",
   });
- 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,16 +32,16 @@ const CreateCategory = ({ activePage }) => {
       ...prev,
       [name]: value,
     }));
-    console.log(category);
+    category;
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-        const response = await customFetch.post(
-          "/category/create-category",
-          category
-        );
+      const response = await customFetch.post(
+        "/category/create-category",
+        category
+      );
       message.success(response.data.message);
       setLoading(false);
       navigate("/categories");
@@ -178,33 +177,32 @@ const CreateCategory = ({ activePage }) => {
 
       <div className=" w-full rounded-xl bg-white p-5 shadow flex items-start gap-5">
         <div className=" p-2 flex flex-col gap-5 w-1/2 ">
-
           <div className=" flex flex-col gap-1 items-start">
             <span className=" text-gray-500">Banner</span>
-          <Upload
-          listType="picture-card"
-          fileList={fileList}
-          customRequest={handleImageUpload}
-          onPreview={handlePreview}
-          onRemove={() => {
-            setFileList([]);
-            setCategory((prev) => ({ ...prev, banner: "" }));
-          }}
-          maxCount={1}
-        >
-          {fileList.length >= 1 ? null : uploadButton}
-        </Upload>
-        {previewImage && (
-          <Image
-            wrapperStyle={{ display: "none"}}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )}
+            <Upload
+              listType="picture-card"
+              fileList={fileList}
+              customRequest={handleImageUpload}
+              onPreview={handlePreview}
+              onRemove={() => {
+                setFileList([]);
+                setCategory((prev) => ({ ...prev, banner: "" }));
+              }}
+              maxCount={1}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+            {previewImage && (
+              <Image
+                wrapperStyle={{ display: "none" }}
+                preview={{
+                  visible: previewOpen,
+                  onVisibleChange: (visible) => setPreviewOpen(visible),
+                  afterOpenChange: (visible) => !visible && setPreviewImage(""),
+                }}
+                src={previewImage}
+              />
+            )}
           </div>
 
           <div className=" flex flex-col gap-1 items-start">
@@ -248,15 +246,18 @@ const CreateCategory = ({ activePage }) => {
           <Image
             width={"100%"}
             height={400}
-            src={category?.banner || "https://placehold.co/600x400?text=Banner+image"}
-            style={{ objectFit: "contain" }}   
+            src={
+              category?.banner ||
+              "https://placehold.co/600x400?text=Banner+image"
+            }
+            style={{ objectFit: "contain" }}
             preview={{
               visible: previewOpen,
               onVisibleChange: (visible) => setPreviewOpen(visible),
               onRemove: () => {
                 setFileList([]);
                 setCategory((prev) => ({ ...prev, banner: "" }));
-              }
+              },
             }}
           />
         </div>

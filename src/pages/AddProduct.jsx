@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import Attributes from "../components/productCompos/Attributes";
 import OtherDetails from "../components/productCompos/OtherDetails";
 import Dimensions from "../components/productCompos/Dimensions";
+import RelatedProducts from "../components/microCompos/product/RelatedProducts";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -35,12 +36,12 @@ const AddProduct = () => {
   });
 
   // useEffect(() => {
-  //   console.log("product data", productData);
+  //   ("product data", productData);
   // }, [productData]);
 
   const handleSaveProduct = async () => {
     try {
-      console.log(document.cookie);
+      document.cookie;
 
       const response = await customFetch.post(
         "/product/create-product",
@@ -113,10 +114,10 @@ const AddProduct = () => {
             setProductData={setProductData}
           />
 
-          <Dimensions productData = {productData}
-          setProductData = {setProductData} />
-
-
+          <Dimensions
+            productData={productData}
+            setProductData={setProductData}
+          />
         </div>
 
         {/* add product right side */}
@@ -140,8 +141,14 @@ const AddProduct = () => {
             productData={productData}
             setProductData={setProductData}
           />
-          <OtherDetails productData={productData}
-          setProductData={setProductData}/>
+          <RelatedProducts
+            productData={productData}
+            setProductData={setProductData}
+          />
+          <OtherDetails
+            productData={productData}
+            setProductData={setProductData}
+          />
         </div>
       </div>
     </main>

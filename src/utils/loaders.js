@@ -53,9 +53,11 @@ export const warehouseLoader = async () =>{
 export const createProductLoader = async () =>{
     const categoryResponse = await publicFetch.get(`/category/all-categories`)
     const warehouseResponse = await customFetch.get(`/warehouse/all`);
+    const allProductsResponse = await publicFetch.get(`/product/all-products`);
     const loaderCategories = categoryResponse.data.data;
     const warehouses = warehouseResponse.data.data;
-    return({loaderCategories, warehouses});
+    const allProducts = allProductsResponse.data.data;
+    return({loaderCategories, warehouses, allProducts});
 }
 
 export const allProductsLoader = async () =>{

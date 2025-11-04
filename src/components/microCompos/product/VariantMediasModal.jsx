@@ -13,7 +13,7 @@ const VariantMediasModal = ({
   const mediaRefs = useRef({});
 
   useEffect(() => {
-    console.log("selectedGroup: ", selectedGroup);
+    "selectedGroup: ", selectedGroup;
   }, [selectedGroup]);
 
   const handleMediaCheckboxChange = (checked, media) => {
@@ -26,8 +26,9 @@ const VariantMediasModal = ({
 
       if (index !== -1) {
         const target = updatedVariants[index];
-        target.variantMedias = Array.isArray(target.variantMedias) ? target.variantMedias : [];
-
+        target.variantMedias = Array.isArray(target.variantMedias)
+          ? target.variantMedias
+          : [];
 
         if (checked) {
           if (!target.variantMedias.some((m) => m.mediaId === media.mediaId)) {
@@ -47,13 +48,13 @@ const VariantMediasModal = ({
     }));
   };
 
-const isMediaChecked = (media) => {
-  if (!selectedGroup || !selectedGroup.length) return false;
+  const isMediaChecked = (media) => {
+    if (!selectedGroup || !selectedGroup.length) return false;
 
-  return selectedGroup.every((variant) =>
-    (variant?.variantMedias ?? []).some((m) => m.mediaId === media.mediaId)
-  );
-};
+    return selectedGroup.every((variant) =>
+      (variant?.variantMedias ?? []).some((m) => m.mediaId === media.mediaId)
+    );
+  };
 
   return (
     <Modal
