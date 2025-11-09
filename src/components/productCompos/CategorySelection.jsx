@@ -1,156 +1,135 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Select } from "antd";
 import { useLoaderData } from "react-router-dom";
 
 const CategorySelection = ({ productData, setProductData }) => {
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [allCategories, setAllCategories] = useState([]);
-  const [visibleOptions, setVisibleOptions] = useState([]);
-
-  // guard loader data so `categories` is always an array
   const loaderData = useLoaderData() || {};
-  const categories = Array.isArray(loaderData.categories)
+  const fetchedCategories = Array.isArray(loaderData.categories)
     ? loaderData.categories
     : [];
 
-  // update only when fetched categories or product's productCategories change
+  const [allCategories, setAllCategories] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  // flatten nested category tree into list with path
+  const flattenCategories = (list = [], parentPath = []) => {
+    const out = [];
+    for (const node of list || []) {
+      const title = node.title ?? node.name ?? "";
+      const path = [...parentPath, title];
+      out.push({
+        categoryId: String(node.categoryId ?? node._id ?? node.id ?? ""),
+        title,
+        slug: node.slug ?? "",
+        path,
+      });
+      if (Array.isArray(node.subCategories) && node.subCategories.length > 0) {
+        out.push(...flattenCategories(node.subCategories, path));
+      }
+    }
+    return out;
+  };
+
+  // keep flattened list & quick map
+  const flatList = useMemo(
+    () => flattenCategories(allCategories),
+    [allCategories]
+  );
+  const flatMap = useMemo(() => {
+    const m = new Map();
+    for (const n of flatList) m.set(String(n.categoryId), n);
+    return m;
+  }, [flatList]);
+
+  // build options from flattened list. show path in bracket for nested items.
+  const optionsSource = useMemo(() => {
+    return flatList.map((n) => {
+      const pathStr = n.path.length > 1 ? n.path.join("-") : "";
+      const label = pathStr ? `${n.title} (${pathStr})` : n.title;
+      return {
+        label,
+        value: String(n.categoryId),
+        key: String(n.categoryId),
+        slug: n.slug,
+      };
+    });
+  }, [flatList]);
+
+  // set allCategories preferring fetched tree, fallback to productData.categories
   useEffect(() => {
-    const sourceCategories =
-      Array.isArray(categories) && categories.length > 0
-        ? categories
+    const source =
+      fetchedCategories && fetchedCategories.length > 0
+        ? fetchedCategories
         : Array.isArray(productData?.categories)
         ? productData.categories
         : [];
+    setAllCategories(source);
+  }, [fetchedCategories, productData?.categories]);
 
-    setAllCategories(sourceCategories);
+  // normalize productData.productCategories to only { categoryId, slug } ONCE when update loads
+  useEffect(() => {
+    const prodCats = Array.isArray(productData?.productCategories)
+      ? productData.productCategories
+      : [];
+    if (prodCats.length === 0) return;
 
-    const initialSelected = Array.isArray(productData?.productCategories)
+    const needNormalize = prodCats.some(
+      (pc) =>
+        typeof pc === "object" &&
+        Object.keys(pc).some((k) => !["categoryId", "slug"].includes(k))
+    );
+    if (!needNormalize) return;
+
+    const normalized = prodCats.map((pc) => {
+      const id = String(pc?.categoryId ?? pc?._id ?? pc?.id ?? pc);
+      const node = flatMap.get(id);
+      const slug = pc?.slug ?? node?.slug ?? "";
+      return { categoryId: id, slug };
+    });
+
+    setProductData((prev) => ({ ...prev, productCategories: normalized }));
+    // run when productData.productCategories first contains un-normalized objects
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productData?.productCategories, flatMap]);
+
+  // initialize selectedItems from productData.productCategories (update case)
+  useEffect(() => {
+    const prodCats = Array.isArray(productData?.productCategories)
       ? productData.productCategories
       : [];
 
-    if (initialSelected.length > 0) {
-      const formatted = initialSelected.map((cat) => ({
-        key: cat.categoryId,
-        value: cat.categoryId,
-        label: cat.title,
-        title: cat.title,
-        slug: cat.slug,
-      }));
-
-      // avoid unnecessary state updates (prevents infinite render loop)
-      if (JSON.stringify(formatted) !== JSON.stringify(selectedItems)) {
-        setSelectedItems(formatted);
-      }
-
-      const lastSelectedId =
-        initialSelected[initialSelected.length - 1].categoryId;
-      const lastSelectedNode = findCategoryNodeById(
-        sourceCategories,
-        lastSelectedId
-      );
-
-      const newVisible =
-        lastSelectedNode?.subCategories?.length > 0
-          ? lastSelectedNode.subCategories
-          : [];
-
-      if (JSON.stringify(newVisible) !== JSON.stringify(visibleOptions)) {
-        setVisibleOptions(newVisible);
-      }
-    } else {
-      const parentCategories = (sourceCategories || []).filter(
-        (cat) => !cat.parentCategoryId
-      );
-
-      if (JSON.stringify(parentCategories) !== JSON.stringify(visibleOptions)) {
-        setVisibleOptions(parentCategories);
-      }
-
-      if (selectedItems.length !== 0) {
-        setSelectedItems([]);
-      }
-    }
-    // only watch categories and productData.productCategories to avoid update depth
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productData]);
-
-  // Handle selection change
-  const handleCategoryChange = (values) => {
-    setSelectedItems(values);
-
-    const updatedCategories = values.map((cat) => {
-      const matched = findCategoryNodeById(allCategories, cat.key || cat.value);
-      return {
-        categoryId: matched?.categoryId || cat.key || cat.value,
-        slug: matched?.slug || cat.slug || cat.slug,
-      };
+    const formatted = prodCats.map((c) => {
+      const id = String(c.categoryId ?? c);
+      const node = flatMap.get(id);
+      const pathStr = node?.path?.length > 1 ? node.path.join("-") : "";
+      const label = pathStr
+        ? `${node?.title ?? id} (${pathStr})`
+        : node?.title ?? id;
+      return { label, value: id, key: id, slug: c.slug ?? node?.slug ?? "" };
     });
 
-    setProductData((prev) => ({
-      ...prev,
-      productCategories: updatedCategories,
-    }));
-
-    const last = values[values.length - 1];
-    const lastNode = findCategoryNodeById(
-      allCategories,
-      last?.value || last?.key
-    );
-
-    if (lastNode?.subCategories?.length > 0) {
-      setVisibleOptions(lastNode.subCategories);
-    } else {
-      setVisibleOptions([]);
+    // avoid unnecessary set to prevent render loop
+    if (JSON.stringify(formatted) !== JSON.stringify(selectedItems)) {
+      setSelectedItems(formatted);
     }
+    // depend on productData.productCategories and flatMap
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productData?.productCategories, flatMap]);
+
+  // handle change: send only id and slug in payload
+  const handleCategoryChange = (values = []) => {
+    setSelectedItems(values);
+
+    const updated = values.map((v) => {
+      const id = String(v.value ?? v.key);
+      const node = flatMap.get(id);
+      return { categoryId: id, slug: node?.slug ?? "" };
+    });
+
+    setProductData((prev) => ({ ...prev, productCategories: updated }));
   };
-
-  // Helper: Recursively search for a category by ID
-  const findCategoryNodeById = (categoriesList = [], id) => {
-    if (!Array.isArray(categoriesList) || !id) return null;
-
-    for (const cat of categoriesList) {
-      if (cat.categoryId === id) return cat;
-      if (cat.subCategories?.length) {
-        const found = findCategoryNodeById(cat.subCategories, id);
-        if (found) return found;
-      }
-    }
-    return null;
-  };
-
-  // Build options
-  const selectedIds = (productData?.productCategories || []).map(
-    (c) => c.categoryId
-  );
-  const selectedOptions = (productData?.productCategories || []).map((c) => {
-    const node = findCategoryNodeById(allCategories, c.categoryId);
-    return {
-      label: node?.title || c.title || c.slug || String(c.categoryId),
-      value: c.categoryId,
-      key: c.categoryId,
-      title: node?.title || c.title,
-      slug: node?.slug || c.slug,
-    };
-  });
-
-  const remainingTopLevel = (allCategories || [])
-    .filter((cat) => !selectedIds.includes(cat.categoryId))
-    .filter((cat) => !cat.parentCategoryId)
-    .map((cat) => ({
-      label: cat.title,
-      value: cat.categoryId,
-      key: cat.categoryId,
-      title: cat.title,
-      slug: cat.slug,
-    }));
-
-  const optionsSource =
-    selectedOptions.length > 0
-      ? [...selectedOptions, ...remainingTopLevel]
-      : visibleOptions && visibleOptions.length > 0
-      ? visibleOptions
-      : remainingTopLevel;
 
   return (
     <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -162,11 +141,12 @@ const CategorySelection = ({ productData, setProductData }) => {
           mode="multiple"
           placeholder="Select category"
           className="mt-2 h-12 w-full"
-          variant="filled"
           value={selectedItems}
           labelInValue
           onChange={handleCategoryChange}
           options={optionsSource}
+          optionFilterProp="label"
+          showSearch
         />
       </div>
     </div>
