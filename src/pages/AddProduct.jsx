@@ -6,7 +6,6 @@ import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { customFetch } from "../utils/Helpers";
 import NavigationHead from "../components/productCompos/NavigationHead";
 import Variants from "../components/productCompos/Variants";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +13,12 @@ import Attributes from "../components/productCompos/Attributes";
 import OtherDetails from "../components/productCompos/OtherDetails";
 import Dimensions from "../components/productCompos/Dimensions";
 import RelatedProducts from "../components/microCompos/product/RelatedProducts";
+import { useDispatch } from "react-redux";
+import { createProduct, invalidateCache } from "../assets/features/productSlice";
 
 const AddProduct = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [productData, setProductData] = useState({
     title: "",
     status: "ACTIVE",
@@ -34,24 +36,30 @@ const AddProduct = () => {
     variants: [],
     warehouseData: [],
   });
-
-  // useEffect(() => {
-  //   ("product data", productData);
-  // }, [productData]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSaveProduct = async () => {
-    try {
-      document.cookie;
+    // Basic validation
+    if (!productData.title || !productData.title.trim()) {
+      toast.error("Product name is required");
+      return;
+    }
 
-      const response = await customFetch.post(
-        "/product/create-product",
-        productData
-      );
-      toast.success(response.data.message);
+    if (!productData.sellPrice || parseFloat(productData.sellPrice) <= 0) {
+      toast.error("Valid sell price is required");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const result = await dispatch(createProduct(productData)).unwrap();
+      toast.success(result.message || "Product created successfully");
+      dispatch(invalidateCache()); // Invalidate cache to force refresh
       navigate("/products");
     } catch (error) {
-      toast.error(error.response.data);
-      // toast.error("Failed to save the product. Please try again.");
+      toast.error(error || "Failed to save the product. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -65,6 +73,7 @@ const AddProduct = () => {
       <NavigationHead
         handleSaveProduct={handleSaveProduct}
         activePage={"add product"}
+        isSubmitting={isSubmitting}
       />
       <div className=" mx-auto px-10 w-full lato grid grid-cols-2 gap-x-6 items-start">
         <div className=" w-full grid grid-cols-1 gap-y-6">

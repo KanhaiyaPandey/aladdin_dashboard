@@ -9,7 +9,7 @@ import { RollbackOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import BackBtn from "../BackBtn";
 
-const NavigationHead = ({ handleSaveProduct, activePage }) => {
+const NavigationHead = ({ handleSaveProduct, activePage, isSubmitting = false }) => {
   const { error, isLoading, Razorpay } = useRazorpay();
 
   const [sendData, setSendData] = useState({
@@ -246,8 +246,16 @@ const NavigationHead = ({ handleSaveProduct, activePage }) => {
         <button className="btn btn-outline hover:bg-gray-200 hover:text-slate-800">
           Save As Draft
         </button>
-        <button className="btn btn-neutral" onClick={() => handleSaveProduct()}>
-          Save
+        <button 
+          className="btn btn-neutral" 
+          onClick={() => handleSaveProduct()}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : (
+            "Save"
+          )}
         </button>
 
         <button className="btn btn-neutral" onClick={handlePay}>

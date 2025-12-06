@@ -9,41 +9,50 @@ import Inventory from "../components/productCompos/Inventory";
 import MediaUpload from "../components/productCompos/MediaUpload";
 import CategorySelection from "../components/productCompos/CategorySelection";
 import NavigationHead from "../components/productCompos/NavigationHead";
-import { customFetch, publicFetch } from "../utils/Helpers";
 import Attributes from "../components/productCompos/Attributes";
 import Variants from "../components/productCompos/Variants";
 import OtherDetails from "../components/productCompos/OtherDetails";
 import RelatedProducts from "../components/microCompos/product/RelatedProducts";
+import { useDispatch } from "react-redux";
+import { updateProduct, invalidateCache } from "../assets/features/productSlice";
 
 const UpdateProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { product } = useLoaderData();
 
   const [productData, setProductData] = useState(product);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {    
-    const fetchData = async () => {
-      try {
-        const response = await publicFetch(
-          `/product/${id}`
-        );     
-        setProductData(response?.data?.data);
-      } catch (err) {
-        toast.error("Failed to load product data");
-      }
-    };
-
-    if (id) fetchData();
-  }, [id]);
+  useEffect(() => {
+    if (product) {
+      setProductData(product);
+    }
+  }, [product]);
 
   const handleUpdateProduct = async () => {
+    // Basic validation
+    if (!productData.title || !productData.title.trim()) {
+      toast.error("Product name is required");
+      return;
+    }
+
+    if (!productData.sellPrice || parseFloat(productData.sellPrice) <= 0) {
+      toast.error("Valid sell price is required");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-     const response = await customFetch.put(`/product/update-product/${id}`, productData)
-      toast.success(response.data.message);
+      const result = await dispatch(updateProduct({ id, productData })).unwrap();
+      toast.success("Product updated successfully");
+      dispatch(invalidateCache()); // Invalidate cache to force refresh
       navigate(`/products/update-product/${id}`);
     } catch (error) {
-      toast.error(error.message || "Failed to update the product.");
+      toast.error(error || "Failed to update the product.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -51,7 +60,11 @@ const UpdateProduct = () => {
 
   return (
      <main className=" h-full flex flex-col items-center justify-center">
-      <NavigationHead handleSaveProduct={handleUpdateProduct} activePage={"update product"} />
+      <NavigationHead 
+        handleSaveProduct={handleUpdateProduct} 
+        activePage={"update product"}
+        isSubmitting={isSubmitting}
+      />
       <div className=" p-7 w-full mx-auto lato grid grid-cols-2 gap-x-6 items-start">
         {/* Left side */}
         <div className="w-full grid grid-cols-1 gap-y-6">

@@ -14,12 +14,15 @@ import AdminHeader from "../components/dashboardCompos/AdminHeader";
 import { Image, Input, message, Upload } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Dragger from "antd/es/upload/Dragger";
+import { useDispatch, useSelector } from "react-redux";
+import { createCategory, invalidateCache, selectCategoriesLoading } from "../assets/features/categorySlice";
 
 const CreateCategory = ({ activePage }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loading = useSelector(selectCategoriesLoading);
   const [data, setData] = useState();
-  const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState({
     title: "",
     description: "",
@@ -36,18 +39,19 @@ const CreateCategory = ({ activePage }) => {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    // Basic validation
+    if (!category.title || !category.title.trim()) {
+      message.error("Category name is required");
+      return;
+    }
+
     try {
-      const response = await customFetch.post(
-        "/category/create-category",
-        category
-      );
-      message.success(response.data.message);
-      setLoading(false);
+      const result = await dispatch(createCategory(category)).unwrap();
+      message.success("Category created successfully");
+      dispatch(invalidateCache()); // Invalidate cache to force refresh
       navigate("/categories");
     } catch (error) {
-      message.error(error?.response?.data?.details || "Something went wrong");
-      setLoading(false);
+      message.error(error || "Something went wrong");
     }
   };
 

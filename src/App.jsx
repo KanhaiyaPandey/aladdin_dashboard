@@ -39,17 +39,17 @@ const router = createBrowserRouter([
         {
           path: "products",
           element: <AllProducts/>,
-          loader:allProductsLoader,
+          loader:allProductsLoader(store),
       },     
        {
           path: "products/add-product",
           element: <AddProduct/>,
-          loader:createProductLoader,
+          loader:createProductLoader(store),
        },
          {
           path: "products/update-product/:id",
           element: <UpdateProduct />,
-          loader:UpdateProductLoader,
+          loader:UpdateProductLoader(store),
         },
          {
           path: "/categories",
@@ -84,7 +84,7 @@ const router = createBrowserRouter([
         {
           path: "/warehouses",
           element: <Warehouse/>,
-          loader:warehouseLoader
+          loader:warehouseLoader(store)
         },
 
         {

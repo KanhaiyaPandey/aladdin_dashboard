@@ -2,6 +2,9 @@ import toast from "react-hot-toast";
 import { redirect } from "react-router-dom";
 import { authFetch, customFetch, publicFetch } from "./Helpers";
 import { loginUser } from "../assets/features/userSlice";
+import { fetchCategories, selectCategoriesCacheValid, selectCategories } from "../assets/features/categorySlice";
+import { fetchProducts, selectProductsCacheValid, selectProducts } from "../assets/features/productSlice";
+import { fetchWarehouses, selectWarehousesCacheValid, selectWarehouses } from "../assets/features/warehouseSlice";
 
 
 
@@ -30,22 +33,53 @@ import { loginUser } from "../assets/features/userSlice";
     return null;
   };
 
-export const UpdateProductLoader = async ({params}) =>{
+export const UpdateProductLoader = (store) => async ({params}) =>{
+      // Check cache first
+      const state = store.getState();
+      const categoriesCacheValid = selectCategoriesCacheValid(state);
+      const productsCacheValid = selectProductsCacheValid(state);
+      const warehousesCacheValid = selectWarehousesCacheValid(state);
+      
+      // Fetch product (always fetch for update page)
       const response = await publicFetch.get(`/product/${params.id}`);
-      const catResponse = await publicFetch.get(`/category/all-categories`)
-      const warehouseResponse = await customFetch.get(`/warehouse/all`);
-      const allProductsResponse = await publicFetch.get(`/product/all-products`);
-      const categories = catResponse.data.data;
       const product = response.data.data;
-      const warehouses = warehouseResponse.data.data;
-      const allProducts = allProductsResponse.data.data;
-       return({product, categories, warehouses, allProducts});
+      
+      // Fetch categories only if cache is invalid
+      let categories = selectCategories(state);
+      if (!categoriesCacheValid || categories.length === 0) {
+        await store.dispatch(fetchCategories());
+        categories = selectCategories(store.getState());
+      }
+      
+      // Fetch warehouses only if cache is invalid
+      let warehouses = selectWarehouses(state);
+      if (!warehousesCacheValid || warehouses.length === 0) {
+        await store.dispatch(fetchWarehouses());
+        warehouses = selectWarehouses(store.getState());
+      }
+      
+      // Fetch products only if cache is invalid
+      let allProducts = selectProducts(state);
+      if (!productsCacheValid || allProducts.length === 0) {
+        await store.dispatch(fetchProducts());
+        allProducts = selectProducts(store.getState());
+      }
+      
+      return({product, categories, warehouses, allProducts});
 }
 
-export const warehouseLoader = async () =>{
+export const warehouseLoader = (store) => async () =>{
     try {
-        const response = await customFetch.get('/warehouse/all');
-        const warehouses = response.data.data;
+        // Check cache first
+        const state = store.getState();
+        const warehousesCacheValid = selectWarehousesCacheValid(state);
+        
+        let warehouses = selectWarehouses(state);
+        if (!warehousesCacheValid || warehouses.length === 0) {
+          await store.dispatch(fetchWarehouses());
+          warehouses = selectWarehouses(store.getState());
+        }
+        
         return { warehouses };
     } catch (error) {
         console.error("Failed to load warehouses:", error);
@@ -54,19 +88,48 @@ export const warehouseLoader = async () =>{
     }
 }
 
-export const createProductLoader = async () =>{
-    const categoryResponse = await publicFetch.get(`/category/all-categories`)
-    const warehouseResponse = await customFetch.get(`/warehouse/all`);
-    const allProductsResponse = await publicFetch.get(`/product/all-products`);
-    const loaderCategories = categoryResponse.data.data;
-    const warehouses = warehouseResponse.data.data;
-    const allProducts = allProductsResponse.data.data;
+export const createProductLoader = (store) => async () =>{
+    // Check cache first
+    const state = store.getState();
+    const categoriesCacheValid = selectCategoriesCacheValid(state);
+    const productsCacheValid = selectProductsCacheValid(state);
+    const warehousesCacheValid = selectWarehousesCacheValid(state);
+    
+    // Fetch categories only if cache is invalid
+    let loaderCategories = selectCategories(state);
+    if (!categoriesCacheValid || loaderCategories.length === 0) {
+      await store.dispatch(fetchCategories());
+      loaderCategories = selectCategories(store.getState());
+    }
+    
+    // Fetch warehouses only if cache is invalid
+    let warehouses = selectWarehouses(state);
+    if (!warehousesCacheValid || warehouses.length === 0) {
+      await store.dispatch(fetchWarehouses());
+      warehouses = selectWarehouses(store.getState());
+    }
+    
+    // Fetch products only if cache is invalid
+    let allProducts = selectProducts(state);
+    if (!productsCacheValid || allProducts.length === 0) {
+      await store.dispatch(fetchProducts());
+      allProducts = selectProducts(store.getState());
+    }
+    
     return({loaderCategories, warehouses, allProducts});
 }
 
-export const allProductsLoader = async () =>{
-    const response = await publicFetch.get(`/product/all-products`);
-    const products = response.data.data;
+export const allProductsLoader = (store) => async () =>{
+    // Check cache first
+    const state = store.getState();
+    const productsCacheValid = selectProductsCacheValid(state);
+    
+    let products = selectProducts(state);
+    if (!productsCacheValid || products.length === 0) {
+      await store.dispatch(fetchProducts());
+      products = selectProducts(store.getState());
+    }
+    
     return({products});
 }
 

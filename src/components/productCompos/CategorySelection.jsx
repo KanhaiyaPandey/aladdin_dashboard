@@ -3,11 +3,21 @@
 import { useEffect, useState, useMemo } from "react";
 import { Select } from "antd";
 import { useLoaderData } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCategories } from "../../assets/features/categorySlice";
 
 const CategorySelection = ({ productData, setProductData }) => {
   const loaderData = useLoaderData() || {};
-  const fetchedCategories = Array.isArray(loaderData.categories)
+  const reduxCategories = useSelector(selectCategories);
+  
+  // Handle both 'categories' and 'loaderCategories' property names from different loaders
+  // Fallback to Redux state if loader data is empty
+  const fetchedCategories = Array.isArray(loaderData.categories) && loaderData.categories.length > 0
     ? loaderData.categories
+    : Array.isArray(loaderData.loaderCategories) && loaderData.loaderCategories.length > 0
+    ? loaderData.loaderCategories
+    : Array.isArray(reduxCategories) && reduxCategories.length > 0
+    ? reduxCategories
     : [];
 
   const [allCategories, setAllCategories] = useState([]);
@@ -65,7 +75,15 @@ const CategorySelection = ({ productData, setProductData }) => {
         : Array.isArray(productData?.categories)
         ? productData.categories
         : [];
-    setAllCategories(source);
+
+    // only update state when source actually differs to prevent re-renders
+    const srcStr = JSON.stringify(source || []);
+    const currentStr = JSON.stringify(allCategories || []);
+    if (srcStr !== currentStr) {
+      setAllCategories(source);
+    }
+    // Remove allCategories from deps to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedCategories, productData?.categories]);
 
   // normalize productData.productCategories to only { categoryId, slug } ONCE when update loads
@@ -100,6 +118,9 @@ const CategorySelection = ({ productData, setProductData }) => {
       ? productData.productCategories
       : [];
 
+    // Only process if flatMap is ready and has data
+    if (flatMap.size === 0 && prodCats.length > 0) return;
+
     const formatted = prodCats.map((c) => {
       const id = String(c.categoryId ?? c);
       const node = flatMap.get(id);
@@ -111,7 +132,9 @@ const CategorySelection = ({ productData, setProductData }) => {
     });
 
     // avoid unnecessary set to prevent render loop
-    if (JSON.stringify(formatted) !== JSON.stringify(selectedItems)) {
+    const formattedStr = JSON.stringify(formatted);
+    const currentStr = JSON.stringify(selectedItems);
+    if (formattedStr !== currentStr) {
       setSelectedItems(formatted);
     }
     // depend on productData.productCategories and flatMap
@@ -132,7 +155,7 @@ const CategorySelection = ({ productData, setProductData }) => {
   };
 
   return (
-    <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
+  <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
       <h1 className="text-xl font-semibold">Category</h1>
 
       <div className="w-full">
@@ -141,8 +164,8 @@ const CategorySelection = ({ productData, setProductData }) => {
           mode="multiple"
           placeholder="Select category"
           className="mt-2 h-12 w-full"
-          value={selectedItems}
           labelInValue
+          value={selectedItems}
           onChange={handleCategoryChange}
           options={optionsSource}
           optionFilterProp="label"

@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
-import { customFetch, publicFetch } from "../utils/Helpers";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   CaretDownOutlined,
@@ -14,10 +13,22 @@ import {
 } from "@ant-design/icons";
 import toast from "react-hot-toast";
 import { Modal, Pagination } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCategories,
+  deleteCategories,
+  selectCategories,
+  selectCategoriesLoading,
+  selectCategoriesCacheValid,
+} from "../assets/features/categorySlice";
 
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const categories = useSelector(selectCategories);
+  const loading = useSelector(selectCategoriesLoading);
+  const cacheValid = useSelector(selectCategoriesCacheValid);
+  
   const [openIndex, setOpenIndex] = useState(categories[0]?.categoryId || null);
   const [data, setData] = useState({
     categoryIds: ["685e7921c33b294805137125"],
@@ -42,41 +53,26 @@ const Categories = () => {
     setDeleteModal({ open: false, category: null });
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (deleteModal.category) {
-      deleteCategories(deleteModal.category.categoryId);
+      await handleDeleteCategories(deleteModal.category.categoryId);
     }
   };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await publicFetch.get("/category/all-categories");
-      setCategories(response.data.data);
-      setLoading(false);
-    } catch (error) {
-      error;
+    // Only fetch if cache is invalid or empty
+    if (!cacheValid || categories.length === 0) {
+      dispatch(fetchCategories());
     }
-  };
+  }, [dispatch, cacheValid, categories.length]);
 
-  const deleteCategories = async (id) => {
+  const handleDeleteCategories = async (id) => {
     setConfirmLoading(true);
     try {
-      const categoryIdsToDelete = id
-        ? [id] // if single id passed
-        : data.categoryIds; // else use state data
-
-      const res = await customFetch.delete("/category/delete-categories", {
-        data: { categoryIds: categoryIdsToDelete },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const categoryIdsToDelete = id ? [id] : data.categoryIds;
+      
+      await dispatch(deleteCategories(categoryIdsToDelete)).unwrap();
+      
       setConfirmLoading(false);
       handleClose();
       if (categoryIdsToDelete.length > 1) {
@@ -84,13 +80,10 @@ const Categories = () => {
       } else {
         toast.success(`Category ${deleteModal?.category?.title} deleted`);
       }
-      await fetchCategories();
     } catch (err) {
-      console.error(
-        "Error deleting categories:",
-        err.response?.data || err.message
-      );
-      toast.error("Something went wrong. Try again later.");
+      console.error("Error deleting categories:", err);
+      toast.error(err || "Something went wrong. Try again later.");
+      setConfirmLoading(false);
     }
   };
 
