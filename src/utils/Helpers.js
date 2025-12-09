@@ -35,19 +35,24 @@ const sanitizeRequestData = (data) => {
 const setupRequestInterceptor = (instance, instanceName) => {
   instance.interceptors.request.use(
     (config) => {
-      // Sanitize request data
-      if (config.data) {
+      // Sanitize JSON only
+      if (config.data && !(config.data instanceof FormData)) {
         config.data = sanitizeRequestData(config.data);
       }
-      
-      // Add security headers
+
+      // Security headers
       config.headers = {
         ...config.headers,
         'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': config.headers['Content-Type'] || 'application/json',
       };
 
-      // Add CSRF token if available
+      // ❗ DO NOT force JSON for FormData
+      if (!(config.data instanceof FormData)) {
+        config.headers['Content-Type'] =
+          config.headers['Content-Type'] || 'application/json';
+      }
+
+      // CSRF Token
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
       if (csrfToken) {
         config.headers['X-CSRF-Token'] = csrfToken;
@@ -55,9 +60,7 @@ const setupRequestInterceptor = (instance, instanceName) => {
 
       return config;
     },
-    (error) => {
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 };
 

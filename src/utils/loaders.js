@@ -10,7 +10,7 @@ import { fetchWarehouses, selectWarehousesCacheValid, selectWarehouses } from ".
 
   export const userAuthLoader = (store) => async () => {
     try {
-      const response = await authFetch.get("/validate-token");
+      const response = await customFetch.get("/validate-token");
 
       if (response.data.success) {
         const user = response.data.data;
@@ -135,6 +135,11 @@ export const allProductsLoader = (store) => async () =>{
 
 
 
-// export const createCategoryLoader = async ({params}) =>{
-//     const response = await publicFetch.get(`/category`)
-// }
+export const ordersLoader = async () =>{
+    const response = await customFetch.get("/orders/all");
+    if(response.data.success){
+       const orders = response.data.data;
+      return {orders}
+    }
+    return [];
+}

@@ -9,7 +9,7 @@ import AdminSection from './components/dashboardCompos/AdminSection'
 import Error from './pages/Error'
 import { LoginAction } from './utils/actions'
 import { store } from './store'
-import { allProductsLoader, createProductLoader, UpdateProductLoader, userAuthLoader, warehouseLoader } from './utils/loaders'
+import { allProductsLoader, createProductLoader, ordersLoader, UpdateProductLoader, userAuthLoader, warehouseLoader } from './utils/loaders'
 import Order from './pages/Order'
 import Categories from './pages/Categories'
 import Collections from './pages/Collections'
@@ -90,6 +90,7 @@ const router = createBrowserRouter([
         {
           path: "/orders",
           element: <Order />,
+          loader:ordersLoader
         },
     ]
   }
