@@ -14,7 +14,7 @@ const Order = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th>Sl No.</th>
+                
                   <th><input type="checkbox" className=" checkbox" name="" id="" /></th>
                   <th>Name & Number</th>
                   <th>Payment Status</th>
@@ -29,7 +29,6 @@ const Order = () => {
                 {/* row 1 */}
                 {orders.map((order, index) => (
                   <tr key={orders.ordersId}>
-                    <td>{index+1}</td>
                     <td><input type="checkbox" className=" checkbox" name="" id="" /></td>
                      <td><p className=" flex text-xs flex-col gap-1">
                         <span>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</span>
