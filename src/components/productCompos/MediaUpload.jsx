@@ -3,13 +3,15 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { customFetch } from "../../utils/Helpers";
+import { MdDelete } from "react-icons/md";
+
 
 const MediaUpload = ({ productData, setProductData }) => {
   const fileInputRef = useRef(null);
   const [medias, setMedias] = useState([]);
   const [inputFile, setInputFile] = useState([]);
   const [dragging, setDragging] = useState(false);
-  const [remianing, setRemaining] = useState(false);
+
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -97,6 +99,11 @@ const MediaUpload = ({ productData, setProductData }) => {
     }
   };
 
+  useEffect(() => {
+     console.log("length",medias.length);
+     
+  }, [medias]);
+
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragging(true);
@@ -118,7 +125,7 @@ const MediaUpload = ({ productData, setProductData }) => {
 
   useEffect(() => {
     setMedias(productData.productMedias);
-  }, [productData]);
+  }, [productData.productMedias]);
 
   return (
     <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
@@ -155,6 +162,9 @@ const MediaUpload = ({ productData, setProductData }) => {
         {medias.length > 0 && (
           <div className=" w-full flex flex-col  gap-2">
             <section className=" flex  gap-2">
+
+              {/* 1st image */}
+
               <div className=" w-[210px] rounded-lg relative bg-white border h-[210px] aspect-square shadow-md">
                 {medias[0].uploading ? (
                   <div className="skeleton rounded-lg w-full h-full aspect-square"></div>
@@ -170,42 +180,19 @@ const MediaUpload = ({ productData, setProductData }) => {
                       onClick={() => handleRemoveMedia(medias[0].mediaId)}
                       className=" absolute top-1 right-1"
                     >
-                      <svg
-                        width="20px"
-                        height="20px"
-                        viewBox="-0.5 0 19 19"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                      >
-                        <g
-                          id="out"
-                          stroke="none"
-                          stroke-width="1"
-                          fill="none"
-                          fill-rule="evenodd"
-                          sketch:type="MSPage"
-                        >
-                          <path
-                            d="M4.91666667,14.8888889 C4.91666667,15.3571429 5.60416667,16 6.0625,16 L12.9375,16 C13.3958333,16 14.0833333,15.3571429 14.0833333,14.8888889 L14.0833333,6 L4.91666667,6 L4.91666667,14.8888889 L4.91666667,14.8888889 L4.91666667,14.8888889 Z M15,3.46500003 L12.5555556,3.46500003 L11.3333333,2 L7.66666667,2 L6.44444444,3.46500003 L4,3.46500003 L4,4.93000007 L15,4.93000007 L15,3.46500003 L15,3.46500003 L15,3.46500003 Z"
-                            id="path"
-                            fill="#000000"
-                            sketch:type="MSShapeGroup"
-                          ></path>
-                        </g>
-                      </svg>
+                     <MdDelete size={20} color="red" />
                     </button>
                   </>
                 )}
               </div>
+
+              {/* upper rows */}
               <div className=" flex flex-wrap gap-2">
-                {medias.slice(1, 5).map((media, index, arr) => (
+                {medias.slice(1, 7).map((media, index, arr) => (
+                  
                   <div
                     key={index}
-                    className={`rounded-lg relative bg-white border h-[100px] w-[100px] flex items-center justify-center aspect-square ${
-                      index === 3 && !remianing ? "hidden" : ""
-                    }`}
+                    className={`rounded-lg relative bg-white border h-[100px] w-[100px] flex items-center justify-center aspect-square`}
                   >
                     {media.uploading ? (
                       <div className="skeleton rounded-lg w-full h-full"></div>
@@ -220,44 +207,14 @@ const MediaUpload = ({ productData, setProductData }) => {
                           onClick={() => handleRemoveMedia(media.mediaId)}
                           className="absolute top-1 right-1"
                         >
-                          <svg
-                            width="20px"
-                            height="20px"
-                            viewBox="-0.5 0 19 19"
-                            version="1.1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink"
-                          >
-                            <g
-                              stroke="none"
-                              strokeWidth="1"
-                              fill="none"
-                              fillRule="evenodd"
-                            >
-                              <path
-                                d="M4.91666667,14.8888889 C4.91666667,15.3571429 5.60416667,16 6.0625,16 L12.9375,16 C13.3958333,16 14.0833333,15.3571429 14.0833333,14.8888889 L14.0833333,6 L4.91666667,6 L4.91666667,14.8888889 L4.91666667,14.8888889 L4.91666667,14.8888889 Z M15,3.46500003 L12.5555556,3.46500003 L11.3333333,2 L7.66666667,2 L6.44444444,3.46500003 L4,3.46500003 L4,4.93000007 L15,4.93000007 L15,3.46500003 L15,3.46500003 L15,3.46500003 Z"
-                                fill="#000000"
-                              ></path>
-                            </g>
-                          </svg>
+                           <MdDelete size={20} color="red" />
                         </button>
                       </>
                     )}
                   </div>
                 ))}
 
-                {medias.length > 5 && (
-                  <div
-                    onClick={() => setRemaining(!remianing)}
-                    className={` ${
-                      remianing ? "hidden" : ""
-                    } w-[100px] h-[100px] rounded-lg shadow-md bg-gradient-to-br from-purple-400 to-orange-300 flex items-center justify-center`}
-                  >
-                    <h1 className=" font-semibold">+{medias.length - 4}</h1>
-                  </div>
-                )}
-
-                {medias.length < 5 && (
+                {medias.length < 7 && (
                   <div className=" aspect-square border items-center justify-center flex rounded-lg shadow-sm w-[100px] h-[100px]">
                     <button className="px-4 py-2 " onClick={handleButtonClick}>
                       +
@@ -276,77 +233,13 @@ const MediaUpload = ({ productData, setProductData }) => {
               </div>
             </section>
 
-            <div
-              className={` ${
-                remianing ? "" : "hidden"
-              } flex w-full flex-wrap gap-2`}
-            >
-              {medias.slice(5).map((media, index) => (
-                <div
-                  key={index}
-                  className="rounded-lg relative bg-white border h-[100px] w-[100px] flex items-center justify-center aspect-square"
-                >
-                  {media.uploading ? (
-                    <div className="skeleton rounded-lg w-full h-full"></div>
-                  ) : (
-                    <>
-                      <img
-                        src={media.url}
-                        className="rounded-lg w-full h-full object-contain shadow-md"
-                        alt=""
-                      />
-                      <button
-                        onClick={() => handleRemoveMedia(media.mediaId)}
-                        className=" absolute top-1 right-1"
-                      >
-                        <svg
-                          width="20px"
-                          height="20px"
-                          viewBox="-0.5 0 19 19"
-                          version="1.1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlnsXlink="http://www.w3.org/1999/xlink"
-                          xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                        >
-                          <g
-                            id="out"
-                            stroke="none"
-                            stroke-width="1"
-                            fill="none"
-                            fill-rule="evenodd"
-                            sketch:type="MSPage"
-                          >
-                            <path
-                              d="M4.91666667,14.8888889 C4.91666667,15.3571429 5.60416667,16 6.0625,16 L12.9375,16 C13.3958333,16 14.0833333,15.3571429 14.0833333,14.8888889 L14.0833333,6 L4.91666667,6 L4.91666667,14.8888889 L4.91666667,14.8888889 L4.91666667,14.8888889 Z M15,3.46500003 L12.5555556,3.46500003 L11.3333333,2 L7.66666667,2 L6.44444444,3.46500003 L4,3.46500003 L4,4.93000007 L15,4.93000007 L15,3.46500003 L15,3.46500003 L15,3.46500003 Z"
-                              id="path"
-                              fill="#000000"
-                              sketch:type="MSShapeGroup"
-                            ></path>
-                          </g>
-                        </svg>
-                      </button>
-                    </>
-                  )}
-                </div>
-              ))}
+            {/* lower rows */}
 
-              {medias.length >= 5 && remianing && (
-                <div className=" aspect-square border items-center justify-center flex rounded-lg shadow-sm w-[100px] h-[100px]">
-                  <button className="px-4 py-2 " onClick={handleButtonClick}>
-                    +
-                    <input
-                      ref={fileInputRef}
-                      id="file-upload"
-                      type="file"
-                      accept="image/*,video/*"
-                      multiple
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                  </button>
-                </div>
-              )}
-            </div>
+           {medias.length >= 7 && <div
+              className={`flex w-full flex-wrap gap-2`}
+            >
+              
+            </div>}
           </div>
         )}
       </div>

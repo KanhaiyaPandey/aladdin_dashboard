@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { customFetch, publicFetch } from "../../utils/Helpers";
 
@@ -20,7 +21,7 @@ export const fetchProduct = createAsyncThunk(
   "products/fetchProduct",
   async (productId, { rejectWithValue }) => {
     try {
-      const response = await publicFetch.get(`/product/${productId}`);
+      const response = await customFetch.get(`/product/${productId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(

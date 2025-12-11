@@ -15,15 +15,15 @@ const Variants = ({ productData, setProductData }) => {
     "selectedVariantEdit: ", selectedVariantEdit;
   }, [selectedVariantEdit]);
 
-  const handleSave = () => {
-    const updatedProductVariants = productData.variants.map((variant) => {
-      if (JSON.stringify(variant.options) === JSON.stringify(variantOptions)) {
-        return { ...variant, [field]: value };
-      }
-      return variant;
-    });
-    setProductData({ ...productData, variants: updatedProductVariants });
-  };
+  // const handleSave = () => {
+  //   const updatedProductVariants = productData.variants.map((variant) => {
+  //     if (JSON.stringify(variant.options) === JSON.stringify(variantOptions)) {
+  //       return { ...variant, [field]: value };
+  //     }
+  //     return variant;
+  //   });
+  //   setProductData({ ...productData, variants: updatedProductVariants });
+  // };
 
   return (
     <div className="w-full  flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl  border shadow-md">

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import VariantMediasModal from "./VariantMediasModal";
 import { CiEdit } from "react-icons/ci";

@@ -25,11 +25,6 @@ const UpdateProduct = () => {
   const [productData, setProductData] = useState(product);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (product) {
-      setProductData(product);
-    }
-  }, [product]);
 
   const handleUpdateProduct = async () => {
     // Basic validation
@@ -56,7 +51,12 @@ const UpdateProduct = () => {
     }
   };
 
-  
+    useEffect(() =>{
+     
+ console.log("productData changed:", productData);
+           
+  }, [productData])
+
 
   return (
      <main className=" h-full flex flex-col items-center justify-center">

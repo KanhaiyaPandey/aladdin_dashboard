@@ -1,162 +1,129 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
-import { Input, Select, Tag } from "antd"
+import { Input, Select, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { generateCombinations } from "../../utils/Helpers";
 import toast from "react-hot-toast";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-const Attributes = ({productData, setProductData}) => {
+const Attributes = ({ productData, setProductData }) => {
   const [attributeName, setAttributeName] = useState("");
   const [attributeValues, setAttributesValues] = useState([]);
-  const [allValues, setAllValues] = useState([]);
-  const [addedAttributes, setAddedAttributes] = useState([]);
+  const [addedAttributes, setAddedAttributes] = useState([]); // main state
 
-
+  // -----------------------------------------------------
+  // 1️⃣ INITIALIZE attributes from productData (only once)
+  // -----------------------------------------------------
   useEffect(() => {
-  const updatedAttrNames = addedAttributes.map(attr => attr.name);
-  const updatedAllValues = addedAttributes.map(attr => attr.values);
-
-  const combinations = generateCombinations(updatedAllValues);
-  const updatedVariants = combinations.map((combo) => ({
-    options: combo,
-    costPrice: "",
-    compareAtPrice: "",
-    sellPrice: "",
-    variantSku:createSku(combo),
-    variantMedias: [],
-    variantWarehouseData: productData.warehouseData || [],
-  }));
-
-  setProductData((prev) => ({
-    ...prev,
-    attributes: updatedAttrNames,
-    variants: updatedVariants,
-  }));
-
     if (
-    productData.attributes?.length &&
-    productData.variants?.length &&
-    addedAttributes.length === 0
-  ) {
-    const attributeNames = productData.attributes;
+      productData?.attributes?.length &&
+      productData?.variants?.length &&
+      addedAttributes.length === 0
+    ) {
+      const attrNames = productData.attributes;
 
-    // Transpose variant options to get values per attribute
-    const transposedOptions = productData.variants.reduce((acc, variant) => {
-      variant.options.forEach((option, index) => {
-        if (!acc[index]) acc[index] = new Set();
-        acc[index].add(option);
-      });
-      return acc;
-    }, []);
+      // Transpose: collect values per attribute index
+      const transposed = productData.variants.reduce((acc, variant) => {
+        variant.options.forEach((opt, i) => {
+          if (!acc[i]) acc[i] = new Set();
+          acc[i].add(opt);
+        });
+        return acc;
+      }, []);
 
-    const reconstructedAttributes = attributeNames.map((name, index) => ({
-      name,
-      values: Array.from(transposedOptions[index] || []),
-    }));
+      const reconstructed = attrNames.map((name, i) => ({
+        name,
+        values: Array.from(transposed[i] || []),
+      }));
 
-    setAddedAttributes(reconstructedAttributes);
-  }
+      setAddedAttributes(reconstructed);
+      statup(reconstructed) // safe — runs only once
+    }
+  }, [productData]);
 
+  // -----------------------------------------------------
+  // 2️⃣ Generate VARIANTS whenever addedAttributes changes
+  // -----------------------------------------------------
 
-}, [addedAttributes]);
+    const statup = (attributes) =>{
 
+      if (addedAttributes.length === 0) return;
+      const names = addedAttributes.map(a => a.name);
+      const values = addedAttributes.map(a => a.values);
+      const combos = generateCombinations(values);
+      const variants = combos.map(combo => ({
+        options: combo,
+        costPrice: "",
+        compareAtPrice: "",
+        sellPrice: "",
+        variantSku: createSku(combo),
+        variantMedias: [],
+        variantWarehouseData: productData.warehouseData || [],
+      }));
 
+      setProductData(prev => ({
+        ...prev,
+        attributes: names,
+        variants: variants,
+      }));
 
+    }
 
-  const handleChange = (values) => {
-    setAttributesValues(values);
+  // -----------------------------------------------------
+  // Helper: SKU creator
+  // -----------------------------------------------------
+  const createSku = combo => {
+    const titlePart = productData.title
+      ? productData.title.replace(/\s+/g, "-").toUpperCase()
+      : "PRODUCT";
+
+    const optionsPart = combo
+      .map(opt => opt.replace(/\s+/g, "-").toUpperCase())
+      .join("-");
+
+    return `${titlePart}-${optionsPart}`;
   };
 
+  // -----------------------------------------------------
+  // Save a NEW Attribute
+  // -----------------------------------------------------
   const handleSave = () => {
-    const updatedAttributes = [...(productData.attributes || []), attributeName];
-    const updatedAllValues = [...allValues, attributeValues];
+    if (!attributeName.trim()) return toast.error("Attribute name required");
+    if (attributeValues.length === 0)
+      return toast.error("Please add attribute values");
 
     setAddedAttributes(prev => [
-        ...prev,
-        { name: attributeName, values: attributeValues }
-    ]);
-
-    setAllValues(updatedAllValues);
-    const combinations = generateCombinations(updatedAllValues);
-
-    const structuredVariants = combinations.map((combo) => ({
-    options: combo,
-    costPrice: "",
-    compareAtPrice: "",
-    sellPrice: "",
-    variantSku:createSku(combo),
-    variantMedias: [],
-    variantWarehouseData: productData.warehouseData || [],
-  }));
-
-    setProductData((prev) => ({
       ...prev,
-      attributes: updatedAttributes,
-       variants: structuredVariants
-    }));
-
-    toast.success("variants created")
+      { name: attributeName.trim(), values: attributeValues },
+    ]);
+    statup([...addedAttributes, { name: attributeName.trim(), values: attributeValues }]);
 
     setAttributeName("");
     setAttributesValues([]);
+
+    toast.success("Attribute added & variants updated");
   };
 
-const handleDelete = (indexToDelete) => {
-  const updatedAttributes = addedAttributes.filter((_, index) => index !== indexToDelete);
-  setAddedAttributes(updatedAttributes);
+  // -----------------------------------------------------
+  // Delete an attribute
+  // -----------------------------------------------------
+  const handleDelete = index => {
+    setAddedAttributes(prev => prev.filter((_, i) => i !== index));
+    statup(addedAttributes.filter((_, i) => i !== index));
+  };
 
-  const updatedAttrNames = updatedAttributes.map(attr => attr.name);
-  const updatedAllValues = updatedAttributes.map(attr => attr.values);
+  const handleEdit = index => {
+    toast("Edit feature coming later");
+  };
 
-  const combinations = generateCombinations(updatedAllValues);
-  const updatedVariants = combinations.map((combo) => ({
-    options: combo,
-    costPrice: "",
-    compareAtPrice: "",
-    variantSku:"",
-    variantMedias: [],
-    variantWarehouseData: [],
-  }));
-
-  setProductData((prev) => ({
-    ...prev,
-    attributes: updatedAttrNames,
-    variants: updatedVariants,
-  }));
-};
-
-const handleEdit = () =>{
-
-}
-
-const createSku = (combo) => {
-  // Use productData.title and join with combo options
-  const titlePart = productData.title
-    ? productData.title.replace(/\s+/g, "-").toUpperCase()
-    : "PRODUCT";
-  const optionsPart = combo.map(opt => opt.replace(/\s+/g, "-").toUpperCase()).join("-");
-  
-  return `${titlePart}-${optionsPart}`;
-}
-
-
-
-
-
-  const tagRender = (props) => {
-    const { label, value, closable, onClose } = props;
+  // ANT tag renderer
+  const tagRender = props => {
+    const { label, closable, onClose } = props;
     return (
       <Tag
         closable={closable}
         onClose={onClose}
-        closeIcon={
-          <svg width="12" height="12" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4.5L4 12.5" stroke="black" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M4 4.5L12 12.5" stroke="black" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        }
-        className="text-black bg-[#C6E7FF] my-1 flex items-center gap-x-1 mx-1 px-3 border-none py-1 rounded-lg font-semibold"
+        className="text-black bg-[#C6E7FF] my-1 px-3 py-1 rounded-lg font-semibold"
       >
         {label}
       </Tag>
@@ -164,77 +131,80 @@ const createSku = (combo) => {
   };
 
   return (
-    <div className="w-full  flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl  border shadow-md lato">
-         <h1 className=" text-xl font-semibold ">Attributes</h1> 
+    <div className="w-full flex flex-col lato gap-y-5 px-5 py-6 rounded-2xl border shadow-md">
+      <h1 className="text-xl font-semibold">Attributes</h1>
 
-         <div className=" flex flex-col gap-2">
+      {/* SHOW ADDED ATTRIBUTES */}
+      {addedAttributes.length > 0 && (
+        <div className="flex flex-col gap-2 p-2 rounded-lg border w-full">
+          {addedAttributes.map((attribute, index) => (
+            <div
+              key={index}
+              className="relative px-3 py-2 flex flex-col gap-2 rounded-lg bg-gray-100 w-full shadow-md text-sm"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-gray-500">Name:</span>
+                <span>{attribute.name}</span>
+              </div>
 
-          { addedAttributes.length > 0 && 
-          <div className="flex flex-col gap-2 p-2  rounded-lg border w-full ">
+              <div className="flex items-center gap-3">
+                <span className="text-gray-500">Values:</span>
+                {attribute.values.map((value, vIndex) => (
+                  <span
+                    key={vIndex}
+                    className="px-3 py-1 rounded-lg bg-[#C6E7FF]"
+                  >
+                    {value}
+                  </span>
+                ))}
+              </div>
 
-            { addedAttributes.map((attribute, index) =>(
-
-            <div key={index} className=" relative px-3 py-2 flex flex-col gap-2 rounded-lg bg-gray-100 w-full shadow-md text-sm">
-                <div className=" flex items-center w-full gap-3">
-                    <span className="  text-gray-500">Name:</span>
-                     <span>{attribute.name}</span>       
-                </div>
-
-                 <div className=" flex items-center w-full gap-3">
-                    <span className="  text-gray-500">Values:</span>
-                    {attribute.values?.map((value, index) =>(
-                        <span className=" px-3 py-1 min-w-10 rounded-lg bg-[#C6E7FF] flex items-center justify-center" key={index}>{value}</span>
-                    ))}      
-                </div>
-
-                <div className=" absolute top-2 right-2 flex items-center gap-4">
-                  <button onClick={() => handleEdit} className=""><EditOutlined /></button>
-                   <button onClick={() => handleDelete(index)} className=""><DeleteOutlined /></button>
-                </div>
-
+              <div className="absolute top-2 right-2 flex items-center gap-4">
+                <button onClick={() => handleEdit(index)}>
+                  <EditOutlined />
+                </button>
+                <button onClick={() => handleDelete(index)}>
+                  <DeleteOutlined />
+                </button>
+              </div>
             </div>
+          ))}
+        </div>
+      )}
 
-            ))}
+      {/* ADD NEW ATTRIBUTE */}
+      <div className="w-full flex flex-col gap-2 px-4 py-2 shadow border rounded-lg">
+        <div className="w-full flex gap-4 items-center justify-between">
+          <p className="w-1/3">Name</p>
+          <Input
+            variant="filled"
+            className="h-12 w-2/3"
+            value={attributeName}
+            onChange={e => setAttributeName(e.target.value)}
+          />
+        </div>
 
-           </div>
+        <div className="w-full flex items-center gap-4 justify-between">
+          <p className="w-1/3">Values</p>
+          <Select
+            mode="tags"
+            variant="filled"
+            className="w-2/3"
+            value={attributeValues}
+            onChange={setAttributesValues}
+            tagRender={tagRender}
+          />
+        </div>
 
-          }
-
-         <div className=" w-full flex flex-col gap-2 items-center justify-center px-4 py-2 shadow border rounded-lg">
-            <div className=" w-full flex gap-4 items-center justify-between">
-               <p className=" w-1/3">Name</p>
-                 <Input
-                    className="h-12 w-2/3"
-                    variant="filled"
-                    value={attributeName}
-                    onChange={(e) => setAttributeName(e.target.value)}
-                    />
-            </div>
-            <div className=" w-full flex items-center gap-4 justify-between">
-               <p className=" w-1/3">Values</p>
-                 <Select
-                            mode="tags"
-                            value={attributeValues} 
-                            variant="filled"
-                            className="w-2/3 text-black flex items-center justify-center"
-                            onChange={handleChange}
-                            tagRender={tagRender}
-                            suffixIcon
-                          />
-            </div>
-
-           <div className=" w-full flex items-center gap-x-2 justify-end">
-            <button className="btn btn-ghost">Discard</button>
-            <button onClick={handleSave} className="btn btn-ghost">Save</button>
-           </div>
-
-         </div>
-
-         </div>
-
-
+        <div className="w-full flex items-center gap-x-2 justify-end">
+          <button className="btn btn-ghost">Discard</button>
+          <button onClick={handleSave} className="btn btn-ghost">
+            Save
+          </button>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Attributes
+export default Attributes;

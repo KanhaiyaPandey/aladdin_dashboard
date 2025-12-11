@@ -41,7 +41,7 @@ export const UpdateProductLoader = (store) => async ({params}) =>{
       const warehousesCacheValid = selectWarehousesCacheValid(state);
       
       // Fetch product (always fetch for update page)
-      const response = await publicFetch.get(`/product/${params.id}`);
+      const response = await customFetch.get(`/product/${params.id}`);
       const product = response.data.data;
       
       // Fetch categories only if cache is invalid

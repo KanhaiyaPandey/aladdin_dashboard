@@ -16,6 +16,7 @@ const Order = () => {
                 <tr>
                 
                   <th><input type="checkbox" className=" checkbox" name="" id="" /></th>
+                  <th>Order Number</th>
                   <th>Name & Number</th>
                   <th>Payment Status</th>
                   <th>Order Amount</th>
@@ -30,6 +31,7 @@ const Order = () => {
                 {orders.map((order, index) => (
                   <tr key={orders.ordersId}>
                     <td><input type="checkbox" className=" checkbox" name="" id="" /></td>
+                    <td>{order?.orderNumber}</td>
                      <td><p className=" flex text-xs flex-col gap-1">
                         <span>{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</span>
                         <span>{order.shippingAddress?.phoneNumber}</span>
@@ -53,9 +55,9 @@ const Order = () => {
                       </p>
                     </td>
                       <td className=" flex flex-col gap-1 text-xs">
-                        {order?.items?.map((item) =>(
+                        {order?.items?.map((item, index) =>(
                           <div key={item.variantId} className=" flex mb-2  flex-col gap-2">
-                            <p className="">{item.title}</p>
+                            <p className=" flex items-center gap-1"><span>{index +1}.</span> <span>{item.title}</span></p>
                              <ul className="list-disc list-inside flex gap-x-2 flex-wrap items-center">
                                 {item?.options?.map((option, index) =>(
                                   <li key={index}>{option}</li>
