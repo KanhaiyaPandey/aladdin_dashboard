@@ -84,7 +84,7 @@ const Order = () => {
                     </td>
                     <td className="">
                       <div className=" flex flex-col gap-1">
-                          <button onClick={() => handleOrderUpdate([order?.orderId], "CONFIRMED")} className=" btn text-xs btn-neutral capitalize">update order to confirmed</button>
+                          <button onClick={() => handleOrderUpdate([order?.orderId], "CONFIRMED")} className=" btn text-xs btn-neutral capitalize"> {order?.status === "CONFIRMED" ? 'Assign AWB' : 'update order to confirmed'}</button>
                           <button className=" btn text-xs  btn-outline capitalize">cancel order</button>            
                       </div>    
                     </td>
