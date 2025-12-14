@@ -257,10 +257,10 @@ const NavigationHead = ({ handleSaveProduct, activePage, isSubmitting = false })
             "Save"
           )}
         </button>
-
+{/* 
         <button className="btn btn-neutral" onClick={handlePay}>
           Pay
-        </button>
+        </button> */}
 
         {/* 
 

@@ -41,10 +41,9 @@ const setupRequestInterceptor = (instance, instanceName) => {
       }
 
       // Security headers
-      config.headers = {
-        ...config.headers,
-        'X-Requested-With': 'XMLHttpRequest',
-      };
+   if (!(config.data instanceof FormData)) {
+        config.headers['X-Requested-With'] = 'XMLHttpRequest';
+      }
 
       // ❗ DO NOT force JSON for FormData
       if (!(config.data instanceof FormData)) {
