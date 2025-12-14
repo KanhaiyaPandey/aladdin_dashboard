@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
-import { customFetch } from "../../utils/Helpers";
+import { customFetch, publicFetch } from "../../utils/Helpers";
 import { MdDelete } from "react-icons/md";
 
 
@@ -53,7 +53,7 @@ const MediaUpload = ({ productData, setProductData }) => {
       formData.append("media", fileObject.file);
     });
     try {
-      const response = await customFetch.post("/media/upload-media", formData);
+      const response = await publicFetch.post("/media/upload-media", formData);
       const uploadedList = response.data.data;
       // Ensure each uploaded object has a url property for preview
       uploadedList.forEach((uploaded) => {
