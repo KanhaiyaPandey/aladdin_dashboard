@@ -33,34 +33,35 @@ const sanitizeRequestData = (data) => {
 
 // Request interceptor for security headers and sanitization
 const setupRequestInterceptor = (instance, instanceName) => {
-  instance.interceptors.request.use(
-    (config) => {
-      // Sanitize JSON only
-      if (config.data && !(config.data instanceof FormData)) {
-        config.data = sanitizeRequestData(config.data);
-      }
+instance.interceptors.request.use(
+  (config) => {
+    const isFormData = config.data instanceof FormData;
 
-      // Security headers
-   if (!(config.data instanceof FormData)) {
-        config.headers['X-Requested-With'] = 'XMLHttpRequest';
-      }
+    // Sanitize JSON only
+    if (config.data && !isFormData) {
+      config.data = sanitizeRequestData(config.data);
+    }
 
-      // ❗ DO NOT force JSON for FormData
-      if (!(config.data instanceof FormData)) {
-        config.headers['Content-Type'] =
-          config.headers['Content-Type'] || 'application/json';
-      }
+    // ❌ DO NOT add ANY custom headers for FormData
+    if (!isFormData) {
+      config.headers['X-Requested-With'] = 'XMLHttpRequest';
 
-      // CSRF Token
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      config.headers['Content-Type'] =
+        config.headers['Content-Type'] || 'application/json';
+
+      const csrfToken = document.querySelector(
+        'meta[name="csrf-token"]'
+      )?.content;
+
       if (csrfToken) {
         config.headers['X-CSRF-Token'] = csrfToken;
       }
+    }
 
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 };
 
 // Response interceptor for error handling and security
