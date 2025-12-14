@@ -1,8 +1,22 @@
-import { useLoaderData } from "react-router-dom"
+import { useLoaderData, useRevalidator } from "react-router-dom"
 import AdminHeader from "../components/dashboardCompos/AdminHeader";
+import { customFetch } from "../utils/Helpers";
+import { message } from "antd";
 
 const Order = () => {
   const {orders} = useLoaderData();
+
+
+  const handleOrderUpdate = async (orderIds, newStatus) => {
+    try {
+      const response = await customFetch.put(`/orders/update-orders-status?status=${newStatus}`, orderIds);
+      message.success(response.data.message);
+      useRevalidator.revalidate();
+    } catch (error) {
+      message.error(error?.response?.data?.details || "Something went wrong");
+    }   
+  }
+
   return (
     <main className="flex flex-col flex-1 m-4 lato text-slate-900 px-4 gap-8">
         <AdminHeader />
@@ -69,7 +83,7 @@ const Order = () => {
                     </td>
                     <td className="">
                       <div className=" flex flex-col gap-1">
-                          <button className=" btn text-xs btn-neutral capitalize">update order to confirmed</button>
+                          <button onClick={() => handleOrderUpdate([order?.orderId], "CONFIRMED")} className=" btn text-xs btn-neutral capitalize">update order to confirmed</button>
                           <button className=" btn text-xs  btn-outline capitalize">cancel order</button>            
                       </div>    
                     </td>
