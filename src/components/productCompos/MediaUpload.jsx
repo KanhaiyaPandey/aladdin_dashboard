@@ -53,7 +53,7 @@ const MediaUpload = ({ productData, setProductData }) => {
       formData.append("media", fileObject.file);
     });
     try {
-      const response = await publicFetch.post("/media/upload-media", formData);
+      const response = await customFetch.post("/media/upload-media", formData);
       const uploadedList = response.data.data;
       // Ensure each uploaded object has a url property for preview
       uploadedList.forEach((uploaded) => {
