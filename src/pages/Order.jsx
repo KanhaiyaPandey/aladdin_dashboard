@@ -5,13 +5,14 @@ import { message } from "antd";
 
 const Order = () => {
   const {orders} = useLoaderData();
+   const revalidator = useRevalidator(); 
 
 
   const handleOrderUpdate = async (orderIds, newStatus) => {
     try {
       const response = await customFetch.put(`/orders/update-orders-status?status=${newStatus}`, orderIds);
       message.success(response.data.message);
-      useRevalidator.revalidate();
+      revalidator .revalidate();
     } catch (error) {
       message.error(error?.response?.data?.details || "Something went wrong");
     }   

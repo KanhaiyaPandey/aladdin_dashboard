@@ -4,8 +4,6 @@ const Landing = () => {
   return (
     <div className="">
 
-      
-
     </div>
   )
 }
