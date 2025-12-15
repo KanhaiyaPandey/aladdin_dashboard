@@ -37,8 +37,8 @@ const AllProducts = () => {
             credentials: "include",
           }
         );
-        revalidator.revalidate();
         toast.success(`Product ${title} deleted successfully!`);
+        revalidator.revalidate();
       } catch (error) {
         console.error("Delete error:", error.message);
         toast.error("Failed to delete product");

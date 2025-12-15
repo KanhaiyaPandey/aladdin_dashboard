@@ -47,9 +47,9 @@ const Attributes = ({ productData, setProductData }) => {
 
     const statup = (attributes) =>{
 
-      if (addedAttributes.length === 0) return;
-      const names = addedAttributes.map(a => a.name);
-      const values = addedAttributes.map(a => a.values);
+      if (attributes.length === 0) return;
+      const names = attributes.map(a => a.name);
+      const values = attributes.map(a => a.values);
       const combos = generateCombinations(values);
       const variants = combos.map(combo => ({
         options: combo,
