@@ -112,7 +112,7 @@ const Attributes = ({ productData, setProductData }) => {
     statup(addedAttributes.filter((_, i) => i !== index));
   };
 
-  const handleEdit = index => {
+  const handleEdit = () => {
     toast("Edit feature coming later");
   };
 
